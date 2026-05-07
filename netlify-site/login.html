@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="https://public-frontend-cos.metadl.com/mgx/img/favicon.png" type="image/png">
+    <title>Login | SkillLink</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+<body class="auth-page">
+    <button class="toggle-mode" onclick="toggleMode()" aria-label="Toggle dark/light mode">
+        <span class="mode-icon">Moon</span>
+    </button>
+
+    <div class="auth-container">
+        <div class="auth-visual">
+            <div class="visual-content">
+                <div class="logo">
+                    <div class="logo-icon">SL</div>
+                    <span class="logo-text">SkillLink</span>
+                </div>
+                <h2>Welcome Back!</h2>
+                <p>Continue your journey to connect with opportunities and showcase your skills.</p>
+                <div class="visual-features">
+                    <div class="visual-feature">
+                        <div class="feature-icon">01</div>
+                        <span>Smart Matching</span>
+                    </div>
+                    <div class="visual-feature">
+                        <div class="feature-icon">02</div>
+                        <span>Global Network</span>
+                    </div>
+                    <div class="visual-feature">
+                        <div class="feature-icon">03</div>
+                        <span>Career Growth</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="auth-form-container">
+            <div class="auth-form">
+                <div class="form-header">
+                    <h1>Sign In</h1>
+                    <p id="loginStepText">Enter your credentials to access your account</p>
+                </div>
+
+                <form id="loginForm" class="login-form" autocomplete="off">
+                    <div class="input-group">
+                        <label for="loginEmail">Email Address</label>
+                        <input type="email" id="loginEmail" name="email" placeholder="Enter your email" required>
+                        <div class="input-icon">@</div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="loginPassword">Password</label>
+                        <input type="password" id="loginPassword" name="password" placeholder="Enter your password" required>
+                        <div class="input-icon">*</div>
+                        <button type="button" class="password-toggle" onclick="togglePassword('loginPassword')">
+                            <span class="toggle-icon">Show</span>
+                        </button>
+                    </div>
+
+                    <div class="form-options">
+                        <label class="checkbox-container">
+                            <input type="checkbox" id="rememberMe">
+                            <span class="checkmark"></span>
+                            Remember me
+                        </label>
+                        <a href="#" class="forgot-password">Forgot password?</a>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-full">
+                        <span class="btn-text">Send OTP</span>
+                        <div class="btn-loader"></div>
+                    </button>
+                </form>
+
+                <form id="otpForm" class="login-form" autocomplete="off" style="display:none;">
+                    <div class="input-group">
+                        <label for="loginOtp">Email OTP</label>
+                        <input type="text" id="loginOtp" name="otp" placeholder="Enter 6-digit code" inputmode="numeric" maxlength="6" required>
+                        <div class="input-icon">#</div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-full">
+                        <span class="btn-text">Verify OTP</span>
+                        <div class="btn-loader"></div>
+                    </button>
+
+                    <button type="button" class="btn btn-outline btn-full" style="margin-top:0.75rem;" onclick="resetLoginStep()">
+                        Use different login
+                    </button>
+                </form>
+
+                <div id="loginResult" class="result"></div>
+
+                <div class="form-footer">
+                    <p>Don't have an account? <a href="register.html" class="auth-link">Create one now</a></p>
+                </div>
+
+                <div class="back-home">
+                    <a href="index.html" class="back-link">Back to Home</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script src="./config.js"></script>
+<script src="./script.js"></script>
+    <script>
+let pendingLoginEmail = '';
+let pendingRememberDevice = true;
+
+function getTrustedLoginToken() {
+    return localStorage.getItem('trustedLoginToken') || '';
+}
+
+function getDeviceLabel() {
+    const platform = navigator.platform || 'Unknown device';
+    const browser = navigator.userAgent || 'Browser';
+    return `${platform} - ${browser}`.slice(0, 200);
+}
+
+function setButtonLoading(button, isLoading) {
+    const btnText = button.querySelector('.btn-text');
+    const btnLoader = button.querySelector('.btn-loader');
+    button.disabled = isLoading;
+    if (btnText) btnText.style.opacity = isLoading ? '0' : '1';
+    if (btnLoader) btnLoader.style.display = isLoading ? 'block' : 'none';
+}
+
+function showLoginMessage(message, type) {
+    const resultDiv = document.getElementById('loginResult');
+    resultDiv.textContent = message;
+    resultDiv.className = `result ${type}`;
+}
+
+function resetLoginStep() {
+    pendingLoginEmail = '';
+    document.getElementById('otpForm').style.display = 'none';
+    document.getElementById('loginForm').style.display = 'block';
+    document.getElementById('loginOtp').value = '';
+    document.getElementById('loginStepText').textContent = 'Enter your credentials to access your account';
+    document.getElementById('loginResult').textContent = '';
+    document.getElementById('loginResult').className = 'result';
+}
+
+document.getElementById('loginForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const submitBtn = this.querySelector('button[type="submit"]');
+    const email = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPassword').value;
+    pendingRememberDevice = document.getElementById('rememberMe').checked;
+
+    setButtonLoading(submitBtn, true);
+    showLoginMessage('', '');
+
+    fetch(window.buildSkillLinkApiUrl('/auth/login'), {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+            email,
+            password,
+            trustedDeviceToken: getTrustedLoginToken()
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.token) {
+            showLoginMessage(data.message || 'Login successful! Redirecting...', 'success');
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('user', JSON.stringify(data.user || {
+                name: email.split('@')[0],
+                email
+            }));
+            setTimeout(() => {
+                window.location.href = 'dashboard.html';
+            }, 500);
+        } else if (data.otpRequired) {
+            pendingLoginEmail = data.email || email;
+            const otpMessage = data.otpPreview
+                ? `${data.message || 'Local OTP ready.'} OTP: ${data.otpPreview}`
+                : (data.message || 'OTP sent to your email.');
+            showLoginMessage(otpMessage, 'success');
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('otpForm').style.display = 'block';
+            document.getElementById('loginStepText').textContent = 'Enter the OTP sent to your email';
+            document.getElementById('loginOtp').focus();
+        } else {
+            showLoginMessage(data.error || data.message || 'Login failed.', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Login error:', error);
+        showLoginMessage('Connection error.', 'error');
+    })
+    .finally(() => {
+        setButtonLoading(submitBtn, false);
+    });
+});
+
+document.getElementById('otpForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const submitBtn = this.querySelector('button[type="submit"]');
+    const otp = document.getElementById('loginOtp').value.trim();
+
+    setButtonLoading(submitBtn, true);
+    showLoginMessage('', '');
+
+    fetch(window.buildSkillLinkApiUrl('/auth/verify-login-otp'), {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+            email: pendingLoginEmail,
+            otp,
+            rememberDevice: pendingRememberDevice,
+            deviceName: getDeviceLabel()
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.token) {
+            showLoginMessage('Login verified! Redirecting...', 'success');
+            localStorage.setItem('token', data.token);
+            if (data.trustedDeviceToken && pendingRememberDevice) {
+                localStorage.setItem('trustedLoginToken', data.trustedDeviceToken);
+            } else if (!pendingRememberDevice) {
+                localStorage.removeItem('trustedLoginToken');
+            }
+            localStorage.setItem('user', JSON.stringify(data.user || {
+                name: pendingLoginEmail.split('@')[0],
+                email: pendingLoginEmail
+            }));
+            setTimeout(() => {
+                window.location.href = 'dashboard.html';
+            }, 800);
+        } else {
+            showLoginMessage(data.error || data.message || 'OTP verification failed.', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('OTP verification error:', error);
+        showLoginMessage('Connection error.', 'error');
+    })
+    .finally(() => {
+        setButtonLoading(submitBtn, false);
+    });
+});
+    </script>
+</body>
+
+</html>

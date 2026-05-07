@@ -1,0 +1,4050 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="https://public-frontend-cos.metadl.com/mgx/img/favicon.png" type="image/png">
+    <title>Dashboard | SkillLink</title>
+    <style>
+        /* CSS Custom Properties for Theme */
+        :root {
+            --primary-color: #667eea;
+            --primary-hover: #5a6fd8;
+            --secondary-color: #764ba2;
+            --accent-color: #f093fb;
+            --background: #f8fafc;
+            --surface: rgba(255, 255, 255, 0.9);
+            --surface-hover: rgba(255, 255, 255, 0.95);
+            --text-primary: #1a202c;
+            --text-secondary: #4a5568;
+            --text-muted: #718096;
+            --border-color: rgba(226, 232, 240, 0.8);
+            --shadow-light: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-medium: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --shadow-large: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --gradient-background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            --glass-background: rgba(255, 255, 255, 0.25);
+            --glass-border: rgba(255, 255, 255, 0.18);
+            --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --error-color: #ef4444;
+            --info-color: #3b82f6;
+        }
+
+        /* Dark Theme */
+        body.dark {
+            --background: #0f172a;
+            --surface: rgba(30, 41, 59, 0.9);
+            --surface-hover: rgba(30, 41, 59, 0.95);
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --border-color: rgba(51, 65, 85, 0.8);
+            --glass-background: rgba(30, 41, 59, 0.25);
+            --glass-border: rgba(148, 163, 184, 0.18);
+            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--background);
+            color: var(--text-primary);
+            line-height: 1.6;
+            transition: all 0.3s ease;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--gradient-background);
+            opacity: 0.05;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--background);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-hover);
+        }
+
+        /* Header */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: var(--glass-background);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--glass-border);
+            z-index: 1000;
+            padding: 1rem 0;
+        }
+
+        .header-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--text-primary);
+        }
+
+        .logo-icon {
+            font-size: 2rem;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .toggle-mode {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: none;
+            background: var(--surface);
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .toggle-mode:hover {
+            transform: scale(1.1);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .user-menu {
+            position: relative;
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .user-avatar:hover {
+            transform: scale(1.1);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .user-avatar img,
+        .contact-avatar img,
+        .profile-avatar-large img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            border-radius: inherit;
+        }
+
+        .dropdown {
+            position: absolute;
+            top: calc(100% + 10px);
+            right: 0;
+            background: var(--surface);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            box-shadow: var(--shadow-large);
+            min-width: 200px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            z-index: 1001;
+        }
+
+        .dropdown.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: background 0.2s ease;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .dropdown-item:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-item:hover {
+            background: var(--surface-hover);
+        }
+
+        .dropdown-item.logout {
+            color: var(--error-color);
+        }
+
+        /* Main Layout */
+        .main-container {
+            display: flex;
+            min-height: 100vh;
+            padding-top: 80px;
+        }
+
+        .sidebar {
+            width: 280px;
+            background: var(--surface);
+            border-right: 1px solid var(--border-color);
+            padding: 2rem 0;
+            position: fixed;
+            left: 0;
+            top: 80px;
+            bottom: 0;
+            overflow-y: auto;
+        }
+
+        .sidebar-nav {
+            list-style: none;
+        }
+
+        .sidebar-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 2rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-right: 3px solid transparent;
+        }
+
+        .sidebar-link:hover,
+        .sidebar-link.active {
+            background: var(--surface-hover);
+            color: var(--primary-color);
+            border-right-color: var(--primary-color);
+        }
+
+        .sidebar-icon {
+            font-size: 1.2rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 2rem;
+            max-width: calc(100% - 280px);
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .page-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.125rem;
+        }
+
+        /* Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: var(--surface);
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-large);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-primary);
+        }
+
+        .stat-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .stat-icon.primary { background: var(--gradient-primary); }
+        .stat-icon.success { background: linear-gradient(135deg, #10b981, #059669); }
+        .stat-icon.warning { background: linear-gradient(135deg, #f59e0b, #d97706); }
+        .stat-icon.info { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .stat-change {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            font-size: 0.875rem;
+        }
+
+        .stat-change.positive { color: var(--success-color); }
+        .stat-change.negative { color: var(--error-color); }
+
+        /* Content Sections */
+        .content-section {
+            background: var(--surface);
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            font-size: 0.875rem;
+        }
+
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        /* Skills Section */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .skill-tag {
+            background: var(--glass-background);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 2rem;
+            padding: 0.75rem 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .skill-tag:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .skill-level {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .skill-stars {
+            display: flex;
+            gap: 2px;
+        }
+
+        .star {
+            width: 12px;
+            height: 12px;
+            background: var(--border-color);
+            border-radius: 2px;
+        }
+
+        .star.filled {
+            background: var(--warning-color);
+        }
+
+        /* Activity Feed */
+        .activity-feed {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .activity-item {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .activity-description {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .activity-time {
+            color: var(--text-muted);
+            font-size: 0.75rem;
+        }
+
+        /* Projects Grid */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .discovery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .people-search-bar {
+            display: flex;
+            gap: 0.75rem;
+            align-items: stretch;
+        }
+
+        .people-search-bar .form-input {
+            min-width: 0;
+        }
+
+        .person-card {
+            background: var(--surface);
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            padding: 1.25rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .person-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-large);
+        }
+
+        .profile-summary {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .profile-headline {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .profile-hero {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .profile-overview {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .profile-avatar-large {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .profile-stats {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 0.75rem;
+        }
+
+        .profile-stat {
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            background: var(--background);
+        }
+
+        .profile-list {
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .profile-list-item {
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            background: var(--background);
+        }
+
+        .admin-summary-grid,
+        .admin-section-grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .admin-summary-grid {
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            margin-bottom: 1.5rem;
+        }
+
+        .admin-summary-card,
+        .admin-item-card {
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            background: var(--background);
+            padding: 1rem;
+        }
+
+        .admin-item-card {
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .admin-inline-grid {
+            display: grid;
+            gap: 0.75rem;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        }
+
+        .admin-actions {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .admin-meta {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .nav-badge {
+            display: none;
+            min-width: 1.35rem;
+            height: 1.35rem;
+            padding: 0 0.35rem;
+            border-radius: 999px;
+            background: var(--gradient-secondary);
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 700;
+            align-items: center;
+            justify-content: center;
+            margin-left: auto;
+        }
+
+        .notification-list,
+        .request-stack {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .notification-card,
+        .request-card {
+            border: 1px solid var(--border-color);
+            border-radius: 0.85rem;
+            background: var(--background);
+            padding: 1rem;
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .notification-card.unread {
+            border-color: rgba(102, 126, 234, 0.45);
+            box-shadow: 0 0 0 1px rgba(102, 126, 234, 0.08);
+        }
+
+        .notification-head,
+        .request-head {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+
+        .notification-title,
+        .request-title {
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .notification-meta,
+        .request-meta {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .notification-message,
+        .request-message {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .notification-actions,
+        .request-actions,
+        .project-chip-row {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .notification-pill,
+        .project-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.35rem 0.7rem;
+            border-radius: 999px;
+            background: rgba(102, 126, 234, 0.12);
+            color: var(--primary-color);
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .project-chip.success {
+            background: rgba(16, 185, 129, 0.12);
+            color: var(--success-color);
+        }
+
+        .project-chip.warning {
+            background: rgba(245, 158, 11, 0.12);
+            color: var(--warning-color);
+        }
+
+        .project-chip.muted {
+            background: rgba(148, 163, 184, 0.14);
+            color: var(--text-muted);
+        }
+
+        .post-composer-tools {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-top: 1rem;
+            align-items: center;
+        }
+
+        .post-media-input {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.65rem 0.9rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.65rem;
+            background: var(--background);
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .post-media-input input {
+            display: none;
+        }
+
+        .composer-preview-grid,
+        .post-media-grid {
+            display: grid;
+            gap: 0.75rem;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        }
+
+        .single-preview {
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .composer-preview-card,
+        .post-media-card {
+            border: 1px solid var(--border-color);
+            border-radius: 0.85rem;
+            background: var(--background);
+            overflow: hidden;
+        }
+
+        .composer-preview-card img,
+        .composer-preview-card video,
+        .post-media-card img,
+        .post-media-card video {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            display: block;
+            background: #000;
+        }
+
+        .composer-preview-meta,
+        .post-media-meta {
+            padding: 0.6rem 0.75rem;
+            font-size: 0.82rem;
+            color: var(--text-muted);
+        }
+
+        .feed-post {
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            background: var(--surface);
+            padding: 1rem;
+            display: grid;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .post-header {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+
+        .post-author {
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .post-meta {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .post-body {
+            color: var(--text-primary);
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .post-actions {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .post-comment-list {
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .post-comment {
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            background: var(--background);
+            padding: 0.75rem;
+            display: grid;
+            gap: 0.45rem;
+        }
+
+        .post-reply-list {
+            display: grid;
+            gap: 0.6rem;
+            margin-top: 0.5rem;
+            padding-left: 1rem;
+            border-left: 2px solid rgba(102, 126, 234, 0.2);
+        }
+
+        .post-comment-form {
+            display: flex;
+            gap: 0.75rem;
+            align-items: flex-start;
+        }
+
+        .post-comment-form .form-input {
+            flex: 1;
+        }
+
+        .project-card {
+            background: var(--surface);
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-large);
+        }
+
+        .project-header {
+            padding: 1.5rem;
+            background: var(--gradient-primary);
+            color: white;
+        }
+
+        .project-banner {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            display: block;
+            background: rgba(15, 23, 42, 0.35);
+        }
+
+        .project-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .project-description {
+            opacity: 0.9;
+            font-size: 0.875rem;
+        }
+
+        .project-body {
+            padding: 1.5rem;
+        }
+
+        .project-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .project-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success-color);
+        }
+
+        .status-pending {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning-color);
+        }
+
+        .status-completed {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--info-color);
+        }
+
+        .project-progress {
+            margin-bottom: 1rem;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--border-color);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--gradient-primary);
+            transition: width 0.3s ease;
+        }
+
+        /* Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: var(--surface);
+            border-radius: 1rem;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+
+        .modal.active .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-muted);
+            padding: 0.25rem;
+        }
+
+        .close-btn:hover {
+            color: var(--text-primary);
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--border-color);
+            border-radius: 0.5rem;
+            background: var(--background);
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .messages-layout {
+            display: grid;
+            grid-template-columns: minmax(240px, 320px) 1fr;
+            gap: 1.5rem;
+            min-height: 560px;
+        }
+
+        .contacts-panel,
+        .chat-panel {
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            background: var(--background);
+            overflow: hidden;
+        }
+
+        .contacts-toolbar {
+            display: flex;
+            gap: 0.75rem;
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .contacts-toolbar .form-input {
+            min-width: 0;
+        }
+
+        .contacts-list {
+            max-height: 470px;
+            overflow-y: auto;
+        }
+
+        .follow-requests-panel {
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem;
+            background: var(--surface);
+        }
+
+        .follow-requests-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+        }
+
+        .follow-request-item {
+            display: grid;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            background: var(--background);
+            margin-bottom: 0.75rem;
+        }
+
+        .follow-request-person {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            min-width: 0;
+        }
+
+        .follow-request-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-small {
+            padding: 0.5rem 0.75rem;
+            font-size: 0.8rem;
+        }
+
+        .contact-item {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.9rem 1rem;
+            border: none;
+            border-bottom: 1px solid var(--border-color);
+            background: transparent;
+            color: var(--text-primary);
+            text-align: left;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .contact-item:hover,
+        .contact-item.active {
+            background: var(--surface-hover);
+        }
+
+        .contact-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .contact-main {
+            min-width: 0;
+            flex: 1;
+        }
+
+        .contact-name {
+            font-weight: 700;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .contact-meta {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .chat-panel {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+
+        .chat-header {
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid var(--border-color);
+            background: var(--surface);
+        }
+
+        .chat-title {
+            font-size: 1.1rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .chat-subtitle {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        .chat-history {
+            flex: 1;
+            min-height: 360px;
+            max-height: 420px;
+            overflow-y: auto;
+            padding: 1rem;
+            background: var(--background);
+        }
+
+        .chat-empty,
+        .contacts-empty {
+            color: var(--text-muted);
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .message-row {
+            display: flex;
+            margin-bottom: 0.65rem;
+        }
+
+        .message-row.is-me {
+            justify-content: flex-end;
+        }
+
+        .message-bubble {
+            max-width: min(72%, 520px);
+            padding: 0.7rem 0.9rem;
+            border-radius: 1rem;
+            background: var(--surface);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            overflow-wrap: anywhere;
+        }
+
+        .message-row.is-me .message-bubble {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+        }
+
+        .message-time {
+            display: block;
+            margin-top: 0.25rem;
+            font-size: 0.7rem;
+            opacity: 0.75;
+        }
+
+        .chat-compose {
+            display: flex;
+            gap: 0.75rem;
+            padding: 1rem;
+            border-top: 1px solid var(--border-color);
+            background: var(--surface);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                max-width: 100%;
+            }
+
+            .header-container {
+                padding: 0 1rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 1rem;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .page-title {
+                font-size: 2rem;
+            }
+
+            .stat-card {
+                padding: 1.5rem;
+            }
+
+            .content-section {
+                padding: 1.5rem;
+            }
+
+            .messages-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .contacts-list {
+                max-height: 260px;
+            }
+
+            .chat-compose {
+                flex-direction: column;
+            }
+
+            .people-search-bar,
+            .profile-headline {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header-container {
+                flex-wrap: wrap;
+                gap: 1rem;
+            }
+
+            .header-actions {
+                order: 3;
+                width: 100%;
+                justify-content: center;
+            }
+
+            .page-title {
+                font-size: 1.75rem;
+            }
+
+            .modal-content {
+                padding: 1.5rem;
+                margin: 1rem;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in-up {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        /* Loading States */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--border-color);
+            border-radius: 50%;
+            border-top-color: var(--primary-color);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <div class="logo">
+                <div class="logo-icon">🔗</div>
+                <span class="logo-text">SkillLink</span>
+            </div>
+            <div class="header-actions">
+                <button class="toggle-mode" onclick="toggleMode()" aria-label="Toggle dark/light mode">
+                    <span class="mode-icon">🌙</span>
+                </button>
+                <div class="user-menu">
+                    <div class="user-avatar" id="headerUserAvatar" onclick="toggleUserMenu()">
+                        <span id="userInitials">JD</span>
+                    </div>
+                    <div class="dropdown" id="userDropdown">
+                        <a href="#" class="dropdown-item" onclick="openProfileModal()">
+                            <span>👤</span>
+                            <span>Profile</span>
+                        </a>
+                        <a href="#" class="dropdown-item" onclick="openSettingsModal()">
+                            <span>⚙️</span>
+                            <span>Settings</span>
+                        </a>
+                        <a href="#" class="dropdown-item">
+                            <span>💬</span>
+                            <span>Messages</span>
+                        </a>
+                        <a href="#" class="dropdown-item">
+                            <span>📊</span>
+                            <span>Analytics</span>
+                        </a>
+                        <a href="#" class="dropdown-item logout" onclick="logout()">
+                            <span>🚪</span>
+                            <span>Logout</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <nav class="sidebar-nav">
+                <ul>
+                    <li class="sidebar-item">
+                        <a href="#" class="sidebar-link active" data-page="dashboard">
+                            <span class="sidebar-icon">📊</span>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="#" class="sidebar-link" data-page="profile">
+                            <span class="sidebar-icon">👤</span>
+                            <span>Profile</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="#" class="sidebar-link" data-page="posts">
+                            <span class="sidebar-icon">📝</span>
+                            <span>Posts</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="#" class="sidebar-link" data-page="bookmarks">
+                            <span class="sidebar-icon">🔖</span>
+                            <span>Bookmarks</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="#" class="sidebar-link" data-page="skills">
+                            <span class="sidebar-icon">🎯</span>
+                            <span>Skills</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="#" class="sidebar-link" data-page="projects">
+                            <span class="sidebar-icon">💼</span>
+                            <span>Projects</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="#" class="sidebar-link" data-page="discovery">
+                            <span class="sidebar-icon">🔍</span>
+                            <span>Discovery</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="#" class="sidebar-link" data-page="notifications">
+                            <span class="sidebar-icon">🚀</span>
+                            <span>Notifications</span>
+                            <span class="nav-badge" id="notificationsBadge">0</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="#" class="sidebar-link" data-page="messages">
+                            <span class="sidebar-icon">💬</span>
+                            <span>Messages</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="#" class="sidebar-link" data-page="analytics">
+                            <span class="sidebar-icon">📈</span>
+                            <span>Analytics</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="#" class="sidebar-link" data-page="settings">
+                            <span class="sidebar-icon">⚙️</span>
+                            <span>Settings</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item" id="adminSidebarItem" style="display: none;">
+                        <a href="#" class="sidebar-link" data-page="admin">
+                            <span class="sidebar-icon">A</span>
+                            <span>Admin</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item" style="margin-top: 2rem;">
+                        <a href="#" class="sidebar-link" style="color: var(--error-color);" onclick="logout()">
+                            <span class="sidebar-icon">🚪</span>
+                            <span>Logout</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Dashboard Page -->
+            <div id="dashboardPage" class="page-content active">
+                <div class="page-header">
+                    <h1 class="page-title">Welcome back, <span id="userName">John</span>!</h1>
+                    <p class="page-subtitle">Here's what's happening with your SkillLink profile today.</p>
+                </div>
+
+                <!-- Stats Grid -->
+                <div class="dashboard-grid">
+                    <div class="stat-card fade-in-up">
+                        <div class="stat-header">
+                            <div class="stat-icon primary">📊</div>
+                        </div>
+                        <div class="stat-value" id="profileViews">1,247</div>
+                        <div class="stat-label">Profile Views</div>
+                        <div class="stat-change positive">
+                            <span>↗️</span>
+                            <span>+12% from last month</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card fade-in-up">
+                        <div class="stat-header">
+                            <div class="stat-icon success">💼</div>
+                        </div>
+                        <div class="stat-value" id="activeProjects">8</div>
+                        <div class="stat-label">Active Projects</div>
+                        <div class="stat-change positive">
+                            <span>↗️</span>
+                            <span>+2 new this week</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card fade-in-up">
+                        <div class="stat-header">
+                            <div class="stat-icon warning">🎯</div>
+                        </div>
+                        <div class="stat-value" id="skillMatches">23</div>
+                        <div class="stat-label">Skill Matches</div>
+                        <div class="stat-change positive">
+                            <span>↗️</span>
+                            <span>+5 new matches</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card fade-in-up">
+                        <div class="stat-header">
+                            <div class="stat-icon info">⭐</div>
+                        </div>
+                        <div class="stat-value" id="rating">4.9</div>
+                        <div class="stat-label">Average Rating</div>
+                        <div class="stat-change positive">
+                            <span>↗️</span>
+                            <span>+0.1 this month</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Skills Overview -->
+                <div class="content-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Your Skills</h2>
+                        <button class="btn btn-primary" onclick="openSkillModal()">
+                            <span>➕</span>
+                            <span>Add Skill</span>
+                        </button>
+                    </div>
+                    <div class="skills-grid" id="skillsGrid">
+                        <!-- Skills will be populated by JavaScript -->
+                    </div>
+                </div>
+<div class="content-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Recent Activity</h2>
+                        <button class="btn btn-outline">View All</button>
+                    </div>
+                    <div class="activity-feed" id="activityFeed">
+                        <!-- Activity items will be populated by JavaScript -->
+                    </div>
+                </div>
+                <!-- Recent Activity -->
+                <div class="content-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Active Projects</h2>
+                        <button class="btn btn-primary" onclick="openProjectModal()">
+                            <span>➕</span>
+                            <span>New Project</span>
+                        </button>
+                    </div>
+                    <div class="projects-grid" id="projectsGrid">
+                        <!-- Projects will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Other pages would go here -->
+            <div id="profilePage" class="page-content" style="display: none;">
+                <div class="page-header">
+                    <h1 class="page-title">Profile</h1>
+                    <p class="page-subtitle">Manage your profile information and settings.</p>
+                </div>
+                <div class="content-section">
+                    <p>Profile management coming soon...</p>
+                </div>
+            </div>
+
+            <div id="postsPage" class="page-content" style="display: none;">
+                <div class="page-header">
+                    <h1 class="page-title">Posts</h1>
+                    <p class="page-subtitle">Share updates, media, and conversations with your network.</p>
+                </div>
+                <div class="content-section">
+                    <div class="loading">Loading posts...</div>
+                </div>
+            </div>
+
+            <div id="bookmarksPage" class="page-content" style="display: none;">
+                <div class="page-header">
+                    <h1 class="page-title">Bookmarks</h1>
+                    <p class="page-subtitle">Keep the people, projects, and posts you want to revisit close by.</p>
+                </div>
+                <div class="content-section">
+                    <div class="loading">Loading bookmarks...</div>
+                </div>
+            </div>
+
+            <div id="skillsPage" class="page-content" style="display: none;">
+                <div class="page-header">
+                    <h1 class="page-title">Skills</h1>
+                    <p class="page-subtitle">Showcase your expertise and add new skills.</p>
+                </div>
+                <div class="content-section">
+                    <p>Skills management coming soon...</p>
+                </div>
+            </div>
+
+            <div id="projectsPage" class="page-content" style="display: none;">
+                <div class="page-header">
+                    <h1 class="page-title">Projects</h1>
+                    <p class="page-subtitle">Manage your projects and collaborations.</p>
+                </div>
+                <div class="content-section">
+                    <p>Project management coming soon...</p>
+                </div>
+            </div>
+
+            <div id="discoveryPage" class="page-content" style="display: none;">
+                <div class="page-header">
+                    <h1 class="page-title">Discovery</h1>
+                    <p class="page-subtitle">AI-powered smart matches based on your unique skills.</p>
+                </div>
+                <div class="discovery-container">
+                    <div class="content-section">
+                        <div class="section-header">
+                            <h2 class="section-title">Find People</h2>
+                        </div>
+                        <div class="people-search-bar">
+                            <input type="search" id="peopleSearchInput" class="form-input" placeholder="Search by name, skill, location, or email..." />
+                            <button class="btn btn-primary" type="button" onclick="searchPeople()">Search</button>
+                        </div>
+                        <div id="peopleSearchResults" class="discovery-grid" style="margin-top:1.5rem;"></div>
+                    </div>
+                    <div class="content-section">
+                        <h2 class="section-title">Recommended Professionals</h2>
+                        <div id="recommendedUsers" class="discovery-grid"></div>
+                    </div>
+                    <div class="content-section" style="margin-top: 2rem;">
+                        <h2 class="section-title">Matching Projects</h2>
+                        <div id="matchingProjects" class="discovery-grid"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="notificationsPage" class="page-content" style="display: none;">
+                <div class="page-header">
+                    <h1 class="page-title">Notifications</h1>
+                    <p class="page-subtitle">Keep up with follow activity, collaboration requests, and project updates.</p>
+                </div>
+                <div class="content-section">
+                    <div class="loading">Loading notifications...</div>
+                </div>
+            </div>
+
+            <div id="messagesPage" class="page-content" style="display: none;">
+                <div class="page-header">
+                    <h1 class="page-title">Messages</h1>
+                    <p class="page-subtitle">Choose someone from your network or recommendations to start a chat.</p>
+                </div>
+                <div class="content-section">
+                    <div class="loading">Loading messages...</div>
+                </div>
+            </div>
+            <div id="adminPage" class="page-content" style="display: none;">
+                <div class="page-header">
+                    <h1 class="page-title">Admin Dashboard</h1>
+                    <p class="page-subtitle">Manage users, posts, projects, skills, and follow requests.</p>
+                </div>
+                <div class="content-section">
+                    <div class="loading">Loading admin tools...</div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <!-- Profile Modal -->
+    <div class="modal" id="profileModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Edit Profile</h3>
+                <button class="close-btn" onclick="closeModal('profileModal')">&times;</button>
+            </div>
+            <form id="profileForm">
+                <div class="form-group">
+                    <label class="form-label">Profile Photo</label>
+                    <input type="file" class="form-input" id="profilePhotoInput" accept="image/*" onchange="renderProfilePhotoPreview()">
+                    <div id="profilePhotoPreview" class="single-preview" style="margin-top:0.75rem;"></div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" class="form-input" id="fullName" value="John Doe">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-input" id="email" value="john.doe@example.com">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Bio</label>
+                    <textarea class="form-input form-textarea" id="bio" placeholder="Tell us about yourself...">Passionate software developer with 5+ years of experience in full-stack development.</textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Location</label>
+                    <input type="text" class="form-input" id="location" value="San Francisco, CA">
+                </div>
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Skill Modal -->
+    <div class="modal" id="skillModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Add New Skill</h3>
+                <button class="close-btn" onclick="closeModal('skillModal')">&times;</button>
+            </div>
+            <form id="skillForm">
+                <div class="form-group">
+                    <label class="form-label">Skill Name</label>
+                    <input type="text" class="form-input" id="skillName" placeholder="e.g., JavaScript, Python, Design">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Proficiency Level</label>
+                    <select class="form-input" id="skillLevel">
+                        <option value="1">Beginner (1 star)</option>
+                        <option value="2">Novice (2 stars)</option>
+                        <option value="3">Intermediate (3 stars)</option>
+                        <option value="4">Advanced (4 stars)</option>
+                        <option value="5">Expert (5 stars)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-input form-textarea" id="skillDescription" placeholder="Describe your experience with this skill..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Add Skill</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Project Modal -->
+    <div class="modal" id="projectModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Create New Project</h3>
+                <button class="close-btn" onclick="closeModal('projectModal')">&times;</button>
+            </div>
+            <form id="projectForm">
+                <div class="form-group">
+                    <label class="form-label">Project Banner</label>
+                    <input type="file" class="form-input" id="projectBannerInput" accept="image/*" onchange="renderProjectBannerPreview()">
+                    <div id="projectBannerPreview" class="single-preview" style="margin-top:0.75rem;"></div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Project Name</label>
+                    <input type="text" class="form-input" id="projectName" placeholder="Enter project name">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-input form-textarea" id="projectDescription" placeholder="Describe your project..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Status</label>
+                    <select class="form-input" id="projectStatus">
+                        <option value="planning">Planning</option>
+                        <option value="active">Active</option>
+                        <option value="pending">Pending</option>
+                        <option value="completed">Completed</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Required Skills (comma separated)</label>
+                    <input type="text" class="form-input" id="projectRequiredSkills" placeholder="e.g., React, Node.js, Design">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Progress (%)</label>
+                    <input type="number" class="form-input" id="projectProgress" min="0" max="100" value="0">
+                </div>
+                <button type="submit" class="btn btn-primary">Create Project</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal" id="publicProfileModal">
+        <div class="modal-content" style="max-width: 720px;">
+            <div class="modal-header">
+                <h3 class="modal-title">Public Profile</h3>
+                <button class="close-btn" onclick="closeModal('publicProfileModal')">&times;</button>
+            </div>
+            <div id="publicProfileContent">
+                <div class="loading">Loading profile...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" style="position:fixed; top:20px; right:20px; z-index:9999; display:flex; flex-direction:column; gap:10px;"></div>
+
+    <!-- Include main script for fetchApi and UI utilities -->
+    <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
+    <script src="./config.js"></script>
+    <script src="./script.js"></script>
+    <script>
+    let currentUser = null;
+    let selectedChatUser = null;
+    let pendingChatUser = null;
+    let chatContacts = [];
+    let incomingFollowRequests = [];
+    let outgoingFollowRequests = [];
+    let incomingProjectRequests = [];
+    let outgoingProjectRequests = [];
+    let adminDataCache = null;
+
+    function toggleUserMenu() {
+        const dropdown = document.getElementById('userDropdown');
+        if (dropdown) {
+            dropdown.classList.toggle('active');
+        }
+    }
+
+    function openPage(pageName) {
+        const link = document.querySelector(`[data-page="${pageName}"]`);
+        if (link) link.click();
+    }
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.user-menu')) {
+            const dropdown = document.getElementById('userDropdown');
+            if (dropdown && dropdown.classList.contains('active')) {
+                dropdown.classList.remove('active');
+            }
+        }
+    });
+
+    // Wait for script.js to initialize
+    document.addEventListener('DOMContentLoaded', async function() {
+        if (!isAuthenticated()) {
+            window.location.href = 'login.html';
+            return;
+        }
+
+        // Initialize sidebar
+        document.querySelectorAll('.sidebar-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+                document.querySelectorAll('.page-content').forEach(p => {
+                    p.classList.remove('active');
+                    p.style.display = 'none';
+                });
+                
+                this.classList.add('active');
+                const pageId = this.getAttribute('data-page') + 'Page';
+                const targetPage = document.getElementById(pageId);
+                if (targetPage) {
+                    targetPage.classList.add('active');
+                    targetPage.style.display = 'block';
+                }
+
+                // Load contextual data
+                const page = this.getAttribute('data-page');
+                if (page === 'profile') loadProfileData();
+                if (page === 'posts') loadPostsPage();
+                if (page === 'bookmarks') loadBookmarksPage();
+                if (page === 'skills') loadSkillsData();
+                if (page === 'projects') loadProjectsData();
+                if (page === 'notifications') loadNotificationsData();
+                if (page === 'messages') loadMessagesData();
+                if (page === 'discovery') loadDiscoveryData();
+                if (page === 'dashboard') loadDashboardData();
+                if (page === 'admin') loadAdminData();
+            });
+        });
+
+        await fetchCurrentUser();
+        loadDashboardData();
+        refreshNotificationsBadge();
+        initSocket();
+
+        const peopleSearchInput = document.getElementById('peopleSearchInput');
+        if (peopleSearchInput) {
+            peopleSearchInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    searchPeople();
+                }
+            });
+        }
+    });
+
+    let socket;
+    function initSocket() {
+        if (!currentUser || !currentUser._id) return;
+        
+        socket = io(window.getSkillLinkApiBase());
+        
+        socket.on('connect', () => {
+            socket.emit('register', currentUser._id);
+        });
+
+        socket.on('newMessage', (msg) => {
+            const senderId = String(msg.sender);
+            if (selectedChatUser && senderId === String(selectedChatUser._id)) {
+                fetchChatHistory();
+            } else {
+                showToast('New Message', 'You received a new message!');
+            }
+        });
+
+        socket.on('postCreated', () => {
+            if (document.getElementById('postsPage')?.classList.contains('active')) {
+                loadPosts();
+            }
+        });
+
+        socket.on('postUpdated', () => {
+            if (document.getElementById('postsPage')?.classList.contains('active')) {
+                loadPosts();
+            }
+        });
+
+        socket.on('newNotification', (data) => {
+            showToast('Notification', data.message);
+            refreshNotificationsBadge();
+            if (document.getElementById('notificationsPage')?.classList.contains('active')) {
+                loadNotificationsData();
+            }
+        });
+
+        socket.on('followRequest', (data) => {
+            if (document.getElementById('messagesPage')?.classList.contains('active')) {
+                loadFollowRequests();
+            }
+        });
+
+        socket.on('followAccepted', async (data) => {
+            await fetchCurrentUser();
+            if (document.getElementById('messagesPage')?.classList.contains('active')) {
+                loadMessageContacts();
+            }
+            if (document.getElementById('discoveryPage')?.classList.contains('active')) {
+                loadDiscoveryData();
+            }
+        });
+
+        socket.on('projectRequestReceived', () => {
+            if (document.getElementById('projectsPage')?.classList.contains('active')) {
+                loadProjectsData();
+            }
+        });
+
+        socket.on('projectRequestUpdated', () => {
+            if (document.getElementById('projectsPage')?.classList.contains('active')) {
+                loadProjectsData();
+            }
+            if (document.getElementById('discoveryPage')?.classList.contains('active')) {
+                loadDiscoveryData();
+            }
+        });
+    }
+
+    function showToast(title, message) {
+        const container = document.getElementById('toast-container');
+        if (!container) return;
+        
+        const toast = document.createElement('div');
+        toast.style.background = 'var(--surface)';
+        toast.style.border = '1px solid var(--primary-color)';
+        toast.style.padding = '15px';
+        toast.style.borderRadius = '8px';
+        toast.style.boxShadow = 'var(--shadow-large)';
+        toast.style.minWidth = '250px';
+        toast.style.transform = 'translateX(100%)';
+        toast.style.opacity = '0';
+        toast.style.transition = 'all 0.3s ease';
+        
+        toast.innerHTML = `
+            <div style="font-weight:bold; margin-bottom:5px; color:var(--primary-color)">${title}</div>
+            <div style="font-size:0.9em; color:var(--text-primary)">${message}</div>
+        `;
+        
+        container.appendChild(toast);
+        
+        // Animate in
+        setTimeout(() => {
+            toast.style.transform = 'translateX(0)';
+            toast.style.opacity = '1';
+        }, 10);
+        
+        // Remove after 5 seconds
+        setTimeout(() => {
+            toast.style.transform = 'translateX(100%)';
+            toast.style.opacity = '0';
+            setTimeout(() => toast.remove(), 300);
+        }, 5000);
+    }
+
+    function escapeHTML(value) {
+        return String(value ?? '').replace(/[&<>"']/g, char => ({
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#39;'
+        }[char]));
+    }
+
+    function getInitial(name) {
+        return (name || 'U').trim().charAt(0).toUpperCase() || 'U';
+    }
+
+    function getProfilePhotoUrl(entity) {
+        return entity?.profilePhoto?.url || '';
+    }
+
+    function renderAvatarMarkup(entity, className = 'user-avatar') {
+        const url = getProfilePhotoUrl(entity);
+        if (url) {
+            return `<span class="${className}"><img src="${escapeHTML(url)}" alt="${escapeHTML(entity?.name || 'User')}"></span>`;
+        }
+        return `<span class="${className}">${escapeHTML(getInitial(entity?.name || 'User'))}</span>`;
+    }
+
+    function renderProjectBanner(project) {
+        if (!project?.bannerMedia?.url) return '';
+        return `<img class="project-banner" src="${escapeHTML(project.bannerMedia.url)}" alt="${escapeHTML(project.name || 'Project banner')}">`;
+    }
+
+    async function getSingleImagePayload(inputId) {
+        const file = document.getElementById(inputId)?.files?.[0];
+        if (!file) return null;
+        if (!file.type.startsWith('image/')) {
+            throw new Error('Please select an image file.');
+        }
+        if (file.size > 8 * 1024 * 1024) {
+            throw new Error(`${file.name} is too large.`);
+        }
+        return {
+            originalName: file.name,
+            dataUrl: await fileToDataUrl(file)
+        };
+    }
+
+    function renderSinglePreview(containerId, file, existingUrl, label) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+
+        if (!file && !existingUrl) {
+            container.innerHTML = '';
+            return;
+        }
+
+        const previewUrl = file ? URL.createObjectURL(file) : existingUrl;
+        const metaText = file ? `${file.name} • ${Math.round(file.size / 1024)} KB` : label;
+        container.innerHTML = `
+            <div class="composer-preview-card">
+                <img src="${escapeHTML(previewUrl)}" alt="${escapeHTML(label)}">
+                <div class="composer-preview-meta">${escapeHTML(metaText)}</div>
+            </div>
+        `;
+    }
+
+    function renderProfilePhotoPreview() {
+        renderSinglePreview(
+            'profilePhotoPreview',
+            document.getElementById('profilePhotoInput')?.files?.[0] || null,
+            currentUser?.profilePhoto?.url || '',
+            'Current profile photo'
+        );
+    }
+
+    function renderProjectBannerPreview() {
+        renderSinglePreview(
+            'projectBannerPreview',
+            document.getElementById('projectBannerInput')?.files?.[0] || null,
+            '',
+            'Project banner'
+        );
+    }
+
+    async function fetchCurrentUser() {
+        try {
+            currentUser = await fetchApi('/auth/me');
+            document.getElementById('userName').innerText = currentUser.name.split(' ')[0] || "User";
+            document.getElementById('userInitials').innerText = currentUser.name.charAt(0).toUpperCase();
+            const headerUserAvatar = document.getElementById('headerUserAvatar');
+            if (headerUserAvatar) {
+                headerUserAvatar.innerHTML = getProfilePhotoUrl(currentUser)
+                    ? `<img src="${escapeHTML(getProfilePhotoUrl(currentUser))}" alt="${escapeHTML(currentUser.name)}">`
+                    : `<span id="userInitials">${escapeHTML(getInitial(currentUser.name))}</span>`;
+            }
+            const adminSidebarItem = document.getElementById('adminSidebarItem');
+            if (adminSidebarItem) {
+                adminSidebarItem.style.display = currentUser.role === 'admin' ? '' : 'none';
+            }
+
+            // Populate profile modal if needed
+            document.getElementById('fullName').value = currentUser.name;
+            document.getElementById('email').value = currentUser.email;
+            document.getElementById('bio').value = currentUser.bio || '';
+            document.getElementById('location').value = currentUser.location || '';
+            renderProfilePhotoPreview();
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    function formatDateTime(value) {
+        if (!value) return 'Just now';
+        return new Date(value).toLocaleString();
+    }
+
+    function updateNotificationsBadge(count) {
+        const badge = document.getElementById('notificationsBadge');
+        if (!badge) return;
+
+        if (!count) {
+            badge.style.display = 'none';
+            badge.textContent = '0';
+            return;
+        }
+
+        badge.style.display = 'inline-flex';
+        badge.textContent = count > 99 ? '99+' : String(count);
+    }
+
+    async function refreshNotificationsBadge() {
+        try {
+            const data = await fetchApi('/notifications');
+            updateNotificationsBadge(data.unreadCount || 0);
+        } catch (error) {
+            console.error('Notification badge refresh failed:', error);
+        }
+    }
+
+    async function loadNotificationsData() {
+        const notificationsPage = document.getElementById('notificationsPage');
+        if (!notificationsPage) return;
+
+        notificationsPage.innerHTML = `
+            <div class="page-header">
+                <h1 class="page-title">Notifications</h1>
+                <p class="page-subtitle">Keep up with follow activity, collaboration requests, and project updates.</p>
+            </div>
+            <div class="content-section">
+                <div class="section-header">
+                    <h2 class="section-title">Inbox</h2>
+                    <button class="btn btn-outline" type="button" onclick="markAllNotificationsRead()">Mark all as read</button>
+                </div>
+                <div class="loading">Loading notifications...</div>
+            </div>
+        `;
+
+        try {
+            const data = await fetchApi('/notifications');
+            updateNotificationsBadge(data.unreadCount || 0);
+
+            notificationsPage.innerHTML = `
+                <div class="page-header">
+                    <h1 class="page-title">Notifications</h1>
+                    <p class="page-subtitle">Keep up with follow activity, collaboration requests, and project updates.</p>
+                </div>
+                <div class="content-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Inbox</h2>
+                        <button class="btn btn-outline" type="button" onclick="markAllNotificationsRead()" ${data.unreadCount ? '' : 'disabled'}>Mark all as read</button>
+                    </div>
+                    <div class="notification-list">
+                        ${data.notifications.length ? data.notifications.map(renderNotificationCard).join('') : '<p style="color:var(--text-muted);">You are all caught up.</p>'}
+                    </div>
+                </div>
+            `;
+        } catch (error) {
+            notificationsPage.innerHTML = `
+                <div class="page-header">
+                    <h1 class="page-title">Notifications</h1>
+                    <p class="page-subtitle">Keep up with follow activity, collaboration requests, and project updates.</p>
+                </div>
+                <div class="content-section">
+                    <p style="color:var(--error-color);">Failed to load notifications: ${escapeHTML(error.message)}</p>
+                </div>
+            `;
+        }
+    }
+
+    function renderNotificationCard(notification) {
+        const pageLink = notification.link || 'notifications';
+        return `
+            <div class="notification-card ${notification.isRead ? '' : 'unread'}">
+                <div class="notification-head">
+                    <div>
+                        <div class="notification-title">${escapeHTML(notification.title)}</div>
+                        <div class="notification-meta">${escapeHTML(notification.actor?.name || 'SkillLink')} • ${escapeHTML(formatDateTime(notification.createdAt))}</div>
+                    </div>
+                    <span class="notification-pill">${escapeHTML(notification.type.replace(/_/g, ' '))}</span>
+                </div>
+                <div class="notification-message">${escapeHTML(notification.message)}</div>
+                <div class="notification-actions">
+                    <button class="btn btn-primary btn-small" type="button" onclick="openNotificationTarget('${escapeHTML(notification._id)}', '${escapeHTML(pageLink)}')">${notification.link ? 'Open' : 'Mark read'}</button>
+                    ${notification.project?.name ? `<span class="project-chip">${escapeHTML(notification.project.name)}</span>` : ''}
+                </div>
+            </div>
+        `;
+    }
+
+    async function openNotificationTarget(notificationId, pageName) {
+        try {
+            await fetchApi(`/notifications/${notificationId}/read`, { method: 'POST' });
+        } catch (error) {
+            console.error('Notification read update failed:', error);
+        }
+
+        if (document.getElementById('notificationsPage')?.classList.contains('active')) {
+            loadNotificationsData();
+        } else {
+            refreshNotificationsBadge();
+        }
+
+        if (pageName && pageName !== 'notifications') {
+            openPage(pageName);
+        }
+    }
+
+    async function markAllNotificationsRead() {
+        try {
+            await fetchApi('/notifications/read-all', { method: 'POST' });
+            await loadNotificationsData();
+        } catch (error) {
+            alert('Could not update notifications: ' + error.message);
+        }
+    }
+
+    /* --- DASHBOARD & POSTS --- */
+
+    async function loadDashboardData() {
+        try {
+            const projects = await fetchApi('/projects');
+            const skills = await fetchApi('/skills');
+            
+            document.getElementById('activeProjects').textContent = projects.filter(p => p.status === 'active').length;
+            document.getElementById('skillMatches').textContent = skills.length;
+            document.getElementById('profileViews').textContent = Math.floor(Math.random() * 50) + 10; // Placeholder for views analytics
+        } catch (error) {
+            console.error('Error loading dashboard stats:', error);
+        }
+    }
+
+    async function createPost() {
+        const content = document.getElementById("postInput").value.trim();
+
+        let media = [];
+        try {
+            media = await collectPostMediaPayload();
+        } catch (error) {
+            alert(error.message);
+            return;
+        }
+
+        if (!content && media.length === 0) return alert("Add some text, an image, or a video.");
+
+        try {
+            await fetchApi('/posts', {
+                method: 'POST',
+                body: JSON.stringify({ content, media })
+            });
+            resetPostComposer();
+            loadPosts();
+        } catch (error) {
+            alert(error.message);
+        }
+    }
+
+    function renderPostsPageLayout() {
+        return `
+            <div class="page-header">
+                <h1 class="page-title">Posts</h1>
+                <p class="page-subtitle">Share updates, media, and conversations with your network.</p>
+            </div>
+            <div class="content-section">
+                <div class="section-header">
+                    <h2 class="section-title">Create Post</h2>
+                </div>
+                <textarea id="postInput" class="form-input form-textarea" placeholder="What's on your mind?"></textarea>
+                <div class="post-composer-tools">
+                    <label class="post-media-input">
+                        <span>Image</span>
+                        <input type="file" id="postImageInput" accept="image/*" multiple onchange="renderPostComposerPreviews()">
+                    </label>
+                    <label class="post-media-input">
+                        <span>Video</span>
+                        <input type="file" id="postVideoInput" accept="video/*" onchange="renderPostComposerPreviews()">
+                    </label>
+                    <button class="btn btn-primary" onclick="createPost()">Post</button>
+                </div>
+                <div id="postMediaPreview" class="composer-preview-grid" style="margin-top:1rem;"></div>
+            </div>
+            <div class="content-section">
+                <div class="section-header">
+                    <h2 class="section-title">Feed</h2>
+                    <button class="btn btn-outline" type="button" onclick="loadPostsPage()">Refresh</button>
+                </div>
+                <div id="postFeed"></div>
+            </div>
+        `;
+    }
+
+    async function loadPostsPage() {
+        const postsPage = document.getElementById('postsPage');
+        if (!postsPage) return;
+
+        postsPage.innerHTML = renderPostsPageLayout();
+        renderPostComposerPreviews();
+        await loadPosts();
+    }
+
+    function getSelectedPostFiles() {
+        const imageFiles = Array.from(document.getElementById('postImageInput')?.files || []);
+        const videoFiles = Array.from(document.getElementById('postVideoInput')?.files || []);
+        return [...imageFiles, ...videoFiles];
+    }
+
+    function fileToDataUrl(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = () => reject(new Error(`Failed to read ${file.name}`));
+            reader.readAsDataURL(file);
+        });
+    }
+
+    async function collectPostMediaPayload() {
+        const files = getSelectedPostFiles();
+        const payload = [];
+
+        if (files.length > 6) {
+            throw new Error('Please keep a post to 6 media files or fewer.');
+        }
+
+        for (const file of files) {
+            const isImage = file.type.startsWith('image/');
+            const isVideo = file.type.startsWith('video/');
+
+            if (!isImage && !isVideo) {
+                throw new Error(`Unsupported file type: ${file.name}`);
+            }
+
+            const maxSize = isImage ? 8 * 1024 * 1024 : 25 * 1024 * 1024;
+            if (file.size > maxSize) {
+                throw new Error(`${file.name} is too large.`);
+            }
+
+            payload.push({
+                originalName: file.name,
+                dataUrl: await fileToDataUrl(file)
+            });
+        }
+
+        return payload;
+    }
+
+    function renderPostComposerPreviews() {
+        const preview = document.getElementById('postMediaPreview');
+        if (!preview) return;
+
+        const files = getSelectedPostFiles();
+        if (!files.length) {
+            preview.innerHTML = '';
+            return;
+        }
+
+        preview.innerHTML = files.map(file => {
+            const objectUrl = URL.createObjectURL(file);
+            const mediaTag = file.type.startsWith('video/')
+                ? `<video src="${objectUrl}" controls muted></video>`
+                : `<img src="${objectUrl}" alt="${escapeHTML(file.name)}">`;
+
+            return `
+                <div class="composer-preview-card">
+                    ${mediaTag}
+                    <div class="composer-preview-meta">${escapeHTML(file.name)} • ${Math.round(file.size / 1024)} KB</div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function resetPostComposer() {
+        document.getElementById("postInput").value = "";
+        const imageInput = document.getElementById('postImageInput');
+        const videoInput = document.getElementById('postVideoInput');
+        if (imageInput) imageInput.value = '';
+        if (videoInput) videoInput.value = '';
+        renderPostComposerPreviews();
+    }
+
+    function renderPostMedia(media = []) {
+        if (!media.length) return '';
+
+        return `
+            <div class="post-media-grid">
+                ${media.map(item => `
+                    <div class="post-media-card">
+                        ${item.type === 'video'
+                            ? `<video src="${escapeHTML(item.url)}" controls preload="metadata"></video>`
+                            : `<img src="${escapeHTML(item.url)}" alt="${escapeHTML(item.originalName || 'Post image')}">`}
+                        <div class="post-media-meta">${escapeHTML(item.type.toUpperCase())}</div>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+    }
+
+    function renderCommentThread(post) {
+        const comments = Array.isArray(post.comments) ? post.comments : [];
+        if (!comments.length) {
+            return '<p style="color:var(--text-muted);">No comments yet. Start the conversation.</p>';
+        }
+
+        const topLevel = comments.filter(comment => !comment.parentCommentId);
+        return `
+            <div class="post-comment-list">
+                ${topLevel.map(comment => renderSingleComment(post._id, comment, comments)).join('')}
+            </div>
+        `;
+    }
+
+    function renderSingleComment(postId, comment, allComments) {
+        const replies = allComments.filter(reply => String(reply.parentCommentId || '') === String(comment._id));
+        const author = comment.user?.name || 'User';
+
+        return `
+            <div class="post-comment">
+                <div class="post-author">${escapeHTML(author)}</div>
+                <div class="post-meta">${escapeHTML(formatDateTime(comment.createdAt))}</div>
+                <div class="post-body">${escapeHTML(comment.content)}</div>
+                ${comment.parentCommentId ? '' : `<div class="post-actions">
+                    <button class="btn btn-outline btn-small" type="button" onclick="replyToPostComment('${escapeHTML(postId)}', '${escapeHTML(comment._id)}', '${escapeHTML(author)}')">Reply</button>
+                </div>`}
+                ${replies.length ? `<div class="post-reply-list">${replies.map(reply => renderSingleComment(postId, reply, [])).join('')}</div>` : ''}
+            </div>
+        `;
+    }
+
+    function renderPostCard(post) {
+        const postAuthor = post.user && post.user.name ? post.user.name : 'Unknown user';
+
+        return `
+            <div class="feed-post" id="post-${escapeHTML(post._id)}">
+                <div class="post-header">
+                    <div>
+                        <div class="post-author">${escapeHTML(postAuthor)}</div>
+                        <div class="post-meta">${escapeHTML(formatDateTime(post.createdAt))}</div>
+                    </div>
+                    <div class="project-chip">${post.likeCount || 0} likes</div>
+                </div>
+                ${post.content ? `<div class="post-body">${escapeHTML(post.content)}</div>` : ''}
+                ${renderPostMedia(post.media || [])}
+                <div class="post-actions">
+                    <button class="btn ${post.hasLiked ? 'btn-primary' : 'btn-outline'} btn-small" type="button" onclick="toggleLike('${escapeHTML(post._id)}')">${post.hasLiked ? 'Unlike' : 'Like'}</button>
+                    <button class="btn btn-outline btn-small" type="button" onclick="sharePost('${escapeHTML(post._id)}')">Share</button>
+                    <button class="btn ${post.isSaved ? 'btn-primary' : 'btn-outline'} btn-small" type="button" onclick="toggleSavedPost('${escapeHTML(post._id)}')">${post.isSaved ? 'Saved' : 'Save'}</button>
+                    <span class="project-chip muted">${post.commentCount || 0} comments</span>
+                </div>
+                <div class="post-comment-form">
+                    <input type="text" id="comment-input-${post._id}" class="form-input" placeholder="Write a comment..." />
+                    <button class="btn btn-primary btn-small" type="button" onclick="submitPostComment('${escapeHTML(post._id)}')">Comment</button>
+                </div>
+                ${renderCommentThread(post)}
+            </div>
+        `;
+    }
+
+    async function loadPosts() {
+        try {
+            const posts = await fetchApi('/posts');
+            const feed = document.getElementById("postFeed");
+            if (!feed) return;
+            feed.innerHTML = posts.length ? posts.map(renderPostCard).join('') : '<p style="color:var(--text-muted);">No posts yet. Share something to get the feed moving.</p>';
+            focusPostFromHash();
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    function focusPostFromHash() {
+        if (!window.location.hash.startsWith('#post-')) return;
+        const target = document.querySelector(window.location.hash);
+        if (target) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    }
+
+    async function toggleLike(postId) {
+        try {
+            await fetchApi(`/posts/${postId}/like`, { method: 'POST' });
+            loadPosts();
+        } catch (error) {
+            alert('Could not update like: ' + error.message);
+        }
+    }
+
+    async function submitPostComment(postId) {
+        const input = document.getElementById(`comment-input-${postId}`);
+        const content = input?.value.trim();
+        if (!content) return;
+
+        try {
+            await fetchApi(`/posts/${postId}/comments`, {
+                method: 'POST',
+                body: JSON.stringify({ content })
+            });
+            input.value = '';
+            loadPosts();
+        } catch (error) {
+            alert('Could not add comment: ' + error.message);
+        }
+    }
+
+    async function replyToPostComment(postId, parentCommentId, authorName) {
+        const content = prompt(`Reply to ${authorName}:`, '');
+        if (!content || !content.trim()) return;
+
+        try {
+            await fetchApi(`/posts/${postId}/comments`, {
+                method: 'POST',
+                body: JSON.stringify({ content: content.trim(), parentCommentId })
+            });
+            loadPosts();
+        } catch (error) {
+            alert('Could not add reply: ' + error.message);
+        }
+    }
+
+    async function sharePost(postId) {
+        const shareUrl = `${window.location.origin}/dashboard.html#post-${postId}`;
+
+        try {
+            if (navigator.share) {
+                await navigator.share({
+                    title: 'SkillLink Post',
+                    text: 'Check out this SkillLink post.',
+                    url: shareUrl
+                });
+                return;
+            }
+
+            await navigator.clipboard.writeText(shareUrl);
+            showToast('Post Shared', 'Post link copied to clipboard.');
+        } catch (error) {
+            console.error('Share failed:', error);
+        }
+    }
+
+    async function toggleSavedPost(postId) {
+        try {
+            await fetchApi(`/bookmarks/posts/${postId}/toggle`, { method: 'POST' });
+            if (document.getElementById('postsPage')?.classList.contains('active')) {
+                loadPostsPage();
+            }
+            if (document.getElementById('bookmarksPage')?.classList.contains('active')) {
+                loadBookmarksPage();
+            }
+        } catch (error) {
+            alert('Could not update saved post: ' + error.message);
+        }
+    }
+
+    async function toggleSavedProject(projectId) {
+        try {
+            await fetchApi(`/bookmarks/projects/${projectId}/toggle`, { method: 'POST' });
+            if (document.getElementById('discoveryPage')?.classList.contains('active')) {
+                loadDiscoveryData();
+            }
+            if (document.getElementById('projectsPage')?.classList.contains('active')) {
+                loadProjectsData();
+            }
+            if (document.getElementById('bookmarksPage')?.classList.contains('active')) {
+                loadBookmarksPage();
+            }
+        } catch (error) {
+            alert('Could not update saved project: ' + error.message);
+        }
+    }
+
+    async function toggleSavedProfile(profileId) {
+        try {
+            await fetchApi(`/bookmarks/profiles/${profileId}/toggle`, { method: 'POST' });
+            if (document.getElementById('discoveryPage')?.classList.contains('active')) {
+                loadDiscoveryData();
+                const searchInput = document.getElementById('peopleSearchInput');
+                if (searchInput?.value.trim()) searchPeople();
+            }
+            if (document.getElementById('bookmarksPage')?.classList.contains('active')) {
+                loadBookmarksPage();
+            }
+            if (document.getElementById('publicProfileModal')?.classList.contains('active')) {
+                openPublicProfile(profileId);
+            }
+        } catch (error) {
+            alert('Could not update saved profile: ' + error.message);
+        }
+    }
+
+    function renderBookmarkProjectCard(project) {
+        return `
+            <div class="project-card">
+                ${renderProjectBanner(project)}
+                <div class="project-header">
+                    <h3 class="project-title">${escapeHTML(project.name)}</h3>
+                    <span class="project-status status-${escapeHTML(project.status)}">${escapeHTML(project.status)}</span>
+                </div>
+                <div class="project-body">
+                    <p class="project-description">${escapeHTML(project.description || 'No description yet.')}</p>
+                    <div class="project-chip-row" style="margin-top:12px;">
+                        ${(project.requiredSkills || []).slice(0, 4).map(skill => `<span class="project-chip">${escapeHTML(skill)}</span>`).join('')}
+                    </div>
+                    <div class="project-actions" style="display:flex; gap:0.75rem; flex-wrap:wrap; margin-top:14px;">
+                        <button class="btn btn-primary btn-small" type="button" onclick="toggleSavedProject('${escapeHTML(project._id)}')">${project.isSaved ? 'Saved' : 'Save'}</button>
+                        <button class="btn btn-outline btn-small" type="button" onclick="contactProjectOwner('${escapeHTML(project.user?._id || project.user)}', '${escapeHTML(project.user?.name || 'Project owner')}')">Contact Owner</button>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    function renderSavedProfileCard(profile) {
+        return `
+            <div class="person-card" onclick="openPublicProfile('${escapeHTML(profile._id)}')">
+                <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
+                    ${renderAvatarMarkup(profile, 'contact-avatar')}
+                    <div style="min-width:0;">
+                        <h4 style="margin:0; font-size:1.05rem;">${escapeHTML(profile.name)}</h4>
+                        <small style="color:var(--text-muted)">${escapeHTML(profile.location || 'Remote')}</small>
+                    </div>
+                </div>
+                <p style="font-size:0.9rem; color:var(--text-secondary); margin-bottom:12px;">${escapeHTML(profile.bio || 'No bio available')}</p>
+                <div style="display:flex; flex-wrap:wrap; gap:5px; min-height:24px;">
+                    ${(profile.skills || []).slice(0, 4).map(skill => `<span style="font-size:0.7rem; background:rgba(102,126,234,0.1); color:var(--primary-color); padding:2px 8px; border-radius:10px;">${escapeHTML(skill.name || skill)}</span>`).join('')}
+                </div>
+                <div style="display:flex; gap:8px; margin-top:14px;">
+                    <button class="btn btn-primary btn-small" type="button" onclick="event.stopPropagation(); toggleSavedProfile('${escapeHTML(profile._id)}')">${profile.isSaved ? 'Saved' : 'Save'}</button>
+                    <button class="btn btn-outline btn-small" type="button" onclick="event.stopPropagation(); openChatWithUser({ _id: '${escapeHTML(profile._id)}', name: '${escapeHTML(profile.name)}', email: '${escapeHTML(profile.email || '')}', location: '${escapeHTML(profile.location || '')}' }, 'Saved profile')">Message</button>
+                </div>
+            </div>
+        `;
+    }
+
+    async function loadBookmarksPage() {
+        const bookmarksPage = document.getElementById('bookmarksPage');
+        if (!bookmarksPage) return;
+
+        bookmarksPage.innerHTML = `
+            <div class="page-header">
+                <h1 class="page-title">Bookmarks</h1>
+                <p class="page-subtitle">Keep the people, projects, and posts you want to revisit close by.</p>
+            </div>
+            <div class="content-section"><div class="loading">Loading bookmarks...</div></div>
+        `;
+
+        try {
+            const data = await fetchApi('/profile/bookmarks');
+            bookmarksPage.innerHTML = `
+                <div class="page-header">
+                    <h1 class="page-title">Bookmarks</h1>
+                    <p class="page-subtitle">Keep the people, projects, and posts you want to revisit close by.</p>
+                </div>
+                <div class="content-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Saved Posts</h2>
+                    </div>
+                    <div id="savedPostFeed">${data.posts.length ? data.posts.map(renderPostCard).join('') : '<p style="color:var(--text-muted);">No saved posts yet.</p>'}</div>
+                </div>
+                <div class="content-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Saved Projects</h2>
+                    </div>
+                    <div class="projects-grid">${data.projects.length ? data.projects.map(renderBookmarkProjectCard).join('') : '<p style="color:var(--text-muted);">No saved projects yet.</p>'}</div>
+                </div>
+                <div class="content-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Saved Profiles</h2>
+                    </div>
+                    <div class="discovery-grid">${data.profiles.length ? data.profiles.map(renderSavedProfileCard).join('') : '<p style="color:var(--text-muted);">No saved profiles yet.</p>'}</div>
+                </div>
+            `;
+        } catch (error) {
+            bookmarksPage.innerHTML = `
+                <div class="page-header">
+                    <h1 class="page-title">Bookmarks</h1>
+                    <p class="page-subtitle">Keep the people, projects, and posts you want to revisit close by.</p>
+                </div>
+                <div class="content-section">
+                    <p style="color:var(--error-color);">Failed to load bookmarks: ${escapeHTML(error.message)}</p>
+                </div>
+            `;
+        }
+    }
+
+    /* --- PROFILE --- */
+    
+    async function loadProfileData() {
+        await fetchCurrentUser();
+        const profilePage = document.getElementById('profilePage');
+        profilePage.innerHTML = `
+            <div class="page-header">
+                <h1 class="page-title">Profile</h1>
+                <p class="page-subtitle">Manage your profile information.</p>
+            </div>
+            <div class="content-section">
+                <div class="profile-hero">
+                    <div class="profile-overview">
+                        ${renderAvatarMarkup(currentUser, 'profile-avatar-large')}
+                        <div style="min-width:0;">
+                            <h3>${escapeHTML(currentUser.name)}</h3>
+                            <p style="color:var(--text-muted)">${escapeHTML(currentUser.email)}</p>
+                        </div>
+                    </div>
+                    <div style="margin-top: 15px;">
+                        <strong>Bio:</strong> <p>${escapeHTML(currentUser.bio || 'No bio yet.')}</p>
+                    </div>
+                    <div style="margin-top: 15px;">
+                        <strong>Location:</strong> <p>${escapeHTML(currentUser.location || 'Not specified')}</p>
+                    </div>
+                    <div class="project-chip-row">
+                        <span class="project-chip">${(currentUser.savedPosts || []).length} saved posts</span>
+                        <span class="project-chip">${(currentUser.savedProjects || []).length} saved projects</span>
+                        <span class="project-chip">${(currentUser.savedProfiles || []).length} saved profiles</span>
+                    </div>
+                    <button class="btn btn-primary" style="margin-top:20px;" onclick="document.getElementById('profileModal').classList.add('active')">Edit Profile</button>
+                </div>
+            </div>
+        `;
+    }
+
+    document.getElementById('profileForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const name = document.getElementById('fullName').value;
+        const bio = document.getElementById('bio').value;
+        const location = document.getElementById('location').value;
+        let profilePhoto = null;
+        try {
+            profilePhoto = await getSingleImagePayload('profilePhotoInput');
+        } catch (error) {
+            alert(error.message);
+            return;
+        }
+
+        try {
+            await fetchApi('/profile', {
+                method: 'PUT',
+                body: JSON.stringify({ name, bio, location, profilePhoto })
+            });
+            closeModal('profileModal');
+            document.getElementById('profilePhotoInput').value = '';
+            await fetchCurrentUser();
+            loadProfileData(); // Reload UI
+            if (document.getElementById('discoveryPage')?.classList.contains('active')) {
+                loadDiscoveryData();
+            }
+            if (document.getElementById('messagesPage')?.classList.contains('active')) {
+                loadMessagesData();
+            }
+        } catch (error) {
+            alert('Update failed: ' + error.message);
+        }
+    });
+
+    /* --- SKILLS --- */
+
+    async function loadSkillsData() {
+        const skillsPage = document.getElementById('skillsPage');
+        try {
+            const skills = await fetchApi('/skills');
+            skillsPage.innerHTML = `
+                <div class="page-header">
+                    <h1 class="page-title">Skills</h1>
+                </div>
+                <div class="content-section">
+                    <button class="btn btn-primary" onclick="openSkillModal()">➕ Add Skill</button>
+                    <div style="margin-top: 20px; display:grid; gap:10px;">
+                        ${skills.length === 0 ? '<p>No skills added yet.</p>' : ''}
+                        ${skills.map(skill => `
+                            <div style="padding:10px; border:1px solid var(--border-color); border-radius:8px; display:flex; justify-content:space-between;">
+                                <div>
+                                    <strong>${skill.name}</strong> - Level ${skill.level}
+                                    <p style="font-size:0.9em; color:var(--text-muted)">${skill.description}</p>
+                                </div>
+                                <button class="btn btn-outline" style="color:var(--error-color); border-color:var(--error-color);" onclick="deleteSkill('${skill._id}')">Delete</button>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        } catch (error) {
+            alert('Failed to load skills');
+        }
+    }
+
+    async function deleteSkill(id) {
+        if (!confirm('Delete this skill?')) return;
+        try {
+            await fetchApi(`/skills/${id}`, { method: 'DELETE' });
+            loadSkillsData();
+        } catch (error) {
+            alert(error.message);
+        }
+    }
+
+    document.getElementById('skillForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const name = document.getElementById('skillName').value;
+        const level = document.getElementById('skillLevel').value;
+        const description = document.getElementById('skillDescription').value;
+
+        try {
+            await fetchApi('/skills', {
+                method: 'POST',
+                body: JSON.stringify({ name, level: Number(level), description })
+            });
+            closeModal('skillModal');
+            this.reset();
+            loadSkillsData();
+        } catch (error) {
+            alert('Skill addition failed: ' + error.message);
+        }
+    });
+
+    /* --- PROJECTS --- */
+
+    async function loadProjectsData() {
+        const projectsPage = document.getElementById('projectsPage');
+        try {
+            const [projects, requestData] = await Promise.all([
+                fetchApi('/projects'),
+                fetchApi('/projects/requests').catch(() => ({ incoming: [], outgoing: [] }))
+            ]);
+
+            incomingProjectRequests = requestData.incoming || [];
+            outgoingProjectRequests = requestData.outgoing || [];
+            const pendingIncoming = incomingProjectRequests.filter(request => request.status === 'pending');
+            const recentOutgoing = outgoingProjectRequests.slice(0, 6);
+
+            projectsPage.innerHTML = `
+                <div class="page-header">
+                    <h1 class="page-title">Projects</h1>
+                    <p class="page-subtitle">Manage your projects, review collaboration requests, and track the teams forming around your work.</p>
+                </div>
+                <div class="content-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Incoming Collaboration Requests</h2>
+                        <button class="btn btn-outline" type="button" onclick="loadProjectsData()">Refresh</button>
+                    </div>
+                    <div class="request-stack">
+                        ${pendingIncoming.length ? pendingIncoming.map(renderIncomingProjectRequestCard).join('') : '<p style="color:var(--text-muted);">No pending collaboration requests right now.</p>'}
+                    </div>
+                </div>
+                <div class="content-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Your Sent Requests</h2>
+                        <span class="project-chip muted">${outgoingProjectRequests.length} total</span>
+                    </div>
+                    <div class="request-stack">
+                        ${recentOutgoing.length ? recentOutgoing.map(renderOutgoingProjectRequestCard).join('') : '<p style="color:var(--text-muted);">You have not requested to join any projects yet.</p>'}
+                    </div>
+                </div>
+                <div class="content-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Your Projects</h2>
+                        <button class="btn btn-primary" onclick="openProjectModal()">➕ New Project</button>
+                    </div>
+                    <div style="margin-top: 20px; display:grid; gap:15px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
+                        ${projects.length === 0 ? '<p>No projects yet.</p>' : ''}
+                        ${projects.map(proj => `
+                            <div class="project-card">
+                                ${renderProjectBanner(proj)}
+                                <div class="project-header">
+                                    <h3 class="project-title">${escapeHTML(proj.name)}</h3>
+                                    <span class="project-status status-${escapeHTML(proj.status)}">${escapeHTML(proj.status.toUpperCase())}</span>
+                                </div>
+                                <div class="project-body">
+                                    <p class="project-description">${escapeHTML(proj.description || 'No description yet.')}</p>
+                                    <div class="project-progress" style="margin-top:10px;">
+                                        <div class="progress-label"><span>Progress</span><span>${escapeHTML(proj.progress)}%</span></div>
+                                        <div class="progress-bar"><div class="progress-fill" style="width: ${proj.progress}%;"></div></div>
+                                    </div>
+                                    <div class="project-chip-row" style="margin-top:12px;">
+                                        <span class="project-chip">${(proj.collaborators || []).length} collaborator${(proj.collaborators || []).length === 1 ? '' : 's'}</span>
+                                        <span class="project-chip warning">${incomingProjectRequests.filter(request => request.status === 'pending' && String(request.project?._id) === String(proj._id)).length} pending requests</span>
+                                    </div>
+                                    <div style="margin-top:12px; color:var(--text-secondary); font-size:0.9rem;">
+                                        ${(proj.collaborators || []).length
+                                            ? `Team: ${(proj.collaborators || []).map(user => escapeHTML(user.name || 'Collaborator')).join(', ')}`
+                                            : 'No collaborators yet.'}
+                                    </div>
+                                    <button class="btn btn-outline" style="width:100%; margin-top:10px; color:var(--error-color); border-color:var(--error-color);" onclick="deleteProject('${proj._id}')">Delete</button>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        } catch (error) {
+            alert('Failed to load projects');
+        }
+    }
+
+    function renderIncomingProjectRequestCard(request) {
+        return `
+            <div class="request-card">
+                <div class="request-head">
+                    <div>
+                        <div class="request-title">${escapeHTML(request.requester?.name || 'Unknown user')} wants to join ${escapeHTML(request.project?.name || 'your project')}</div>
+                        <div class="request-meta">${escapeHTML(request.requester?.email || '')}${request.requester?.location ? ' • ' + escapeHTML(request.requester.location) : ''}</div>
+                    </div>
+                    <span class="project-chip warning">${escapeHTML(request.status)}</span>
+                </div>
+                <div class="request-message">${escapeHTML(request.message || 'No note attached.')}</div>
+                <div class="project-chip-row">
+                    ${(request.project?.requiredSkills || []).slice(0, 4).map(skill => `<span class="project-chip">${escapeHTML(skill)}</span>`).join('')}
+                </div>
+                <div class="request-actions">
+                    <button class="btn btn-primary btn-small" type="button" onclick="respondToProjectRequest('${escapeHTML(request._id)}', 'accepted')">Accept</button>
+                    <button class="btn btn-outline btn-small" type="button" onclick="respondToProjectRequest('${escapeHTML(request._id)}', 'rejected')">Reject</button>
+                </div>
+            </div>
+        `;
+    }
+
+    function renderOutgoingProjectRequestCard(request) {
+        const ownerLabel = request.owner?.name || 'Project owner';
+        const statusClass = request.status === 'accepted' ? 'success' : request.status === 'rejected' ? 'muted' : 'warning';
+        return `
+            <div class="request-card">
+                <div class="request-head">
+                    <div>
+                        <div class="request-title">${escapeHTML(request.project?.name || 'Project')}</div>
+                        <div class="request-meta">Owner: ${escapeHTML(ownerLabel)} • ${escapeHTML(formatDateTime(request.createdAt))}</div>
+                    </div>
+                    <span class="project-chip ${statusClass}">${escapeHTML(request.status)}</span>
+                </div>
+                <div class="request-message">${escapeHTML(request.message || 'No note sent with this request.')}</div>
+                ${request.responseMessage ? `<div class="request-meta">Owner response: ${escapeHTML(request.responseMessage)}</div>` : ''}
+            </div>
+        `;
+    }
+
+    async function respondToProjectRequest(requestId, status) {
+        const responseMessage = prompt(
+            status === 'accepted'
+                ? 'Optional welcome note for the collaborator:'
+                : 'Optional note to send with the decline:',
+            ''
+        );
+
+        try {
+            await fetchApi(`/projects/requests/${requestId}/respond`, {
+                method: 'POST',
+                body: JSON.stringify({ status, responseMessage: responseMessage === null ? '' : responseMessage.trim() })
+            });
+            showToast('Projects', status === 'accepted' ? 'Collaboration request accepted.' : 'Collaboration request rejected.');
+            await loadProjectsData();
+            refreshNotificationsBadge();
+        } catch (error) {
+            alert('Could not update collaboration request: ' + error.message);
+        }
+    }
+
+    async function deleteProject(id) {
+        if (!confirm('Delete this project?')) return;
+        try {
+            await fetchApi(`/projects/${id}`, { method: 'DELETE' });
+            loadProjectsData();
+        } catch (error) {
+            alert(error.message);
+        }
+    }
+
+    document.getElementById('projectForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const name = document.getElementById('projectName').value;
+        const description = document.getElementById('projectDescription').value;
+        const status = document.getElementById('projectStatus').value;
+        const progress = document.getElementById('projectProgress').value;
+        const requiredSkillsRaw = document.getElementById('projectRequiredSkills').value;
+        const requiredSkills = requiredSkillsRaw.split(',').map(s => s.trim()).filter(s => s !== '');
+        let bannerMedia = null;
+        try {
+            bannerMedia = await getSingleImagePayload('projectBannerInput');
+        } catch (error) {
+            alert(error.message);
+            return;
+        }
+
+        try {
+            await fetchApi('/projects', {
+                method: 'POST',
+                body: JSON.stringify({ name, description, status, progress: Number(progress), requiredSkills, bannerMedia })
+            });
+            closeModal('projectModal');
+            this.reset();
+            renderProjectBannerPreview();
+            loadProjectsData();
+        } catch (error) {
+            alert('Project creation failed: ' + error.message);
+        }
+    });
+
+    /* --- MESSAGES --- */
+    
+    async function loadMessagesData() {
+        const msgsPage = document.getElementById('messagesPage');
+        msgsPage.innerHTML = `
+            <div class="page-header">
+                <h1 class="page-title">Messages</h1>
+                <p class="page-subtitle">Pick someone from your network or recommendations and start chatting.</p>
+            </div>
+            <div class="content-section">
+                <div class="messages-layout">
+                    <aside class="contacts-panel">
+                        <div id="followRequestsPanel" class="follow-requests-panel">
+                            <div class="follow-requests-title">Follow Requests</div>
+                            <div id="followRequestsList" class="contacts-empty" style="padding:0;">Loading requests...</div>
+                        </div>
+                        <div class="contacts-toolbar">
+                            <input type="search" id="contactSearch" class="form-input" placeholder="Search people..." />
+                            <button class="btn btn-outline" type="button" onclick="loadMessagesData()">Refresh</button>
+                        </div>
+                        <div id="contactsList" class="contacts-list">
+                            <div class="contacts-empty">Loading people...</div>
+                        </div>
+                    </aside>
+
+                    <section class="chat-panel">
+                        <div class="chat-header">
+                            <h2 id="chatTitle" class="chat-title">Select a conversation</h2>
+                            <div id="chatSubtitle" class="chat-subtitle">Discovery matches and your network will appear on the left.</div>
+                        </div>
+                        <div id="chatHistory" class="chat-history">
+                            <div class="chat-empty">Choose a person to view messages.</div>
+                        </div>
+                        <div class="chat-compose">
+                            <input type="text" id="msgText" placeholder="Type a message..." class="form-input" disabled />
+                            <button id="sendMessageBtn" class="btn btn-primary" onclick="sendMessage()" disabled>Send</button>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        `;
+
+        document.getElementById('msgText').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        await loadFollowRequests();
+        await loadMessageContacts();
+    }
+
+    async function loadFollowRequests() {
+        const requestsList = document.getElementById('followRequestsList');
+        if (!requestsList) return;
+
+        try {
+            const data = await fetchApi('/follow/requests');
+            incomingFollowRequests = data.incoming || [];
+            outgoingFollowRequests = data.outgoing || [];
+            renderFollowRequests();
+        } catch (error) {
+            requestsList.innerHTML = '<div class="contacts-empty" style="padding:0;">Could not load requests.</div>';
+        }
+    }
+
+    function renderFollowRequests() {
+        const requestsList = document.getElementById('followRequestsList');
+        if (!requestsList) return;
+
+        if (incomingFollowRequests.length === 0) {
+            const pendingCount = outgoingFollowRequests.length;
+            requestsList.innerHTML = `<div class="contacts-empty" style="padding:0; text-align:left;">${pendingCount ? `${pendingCount} sent request${pendingCount > 1 ? 's' : ''} pending.` : 'No pending requests.'}</div>`;
+            return;
+        }
+
+        requestsList.innerHTML = incomingFollowRequests.map(request => `
+            <div class="follow-request-item">
+                <div class="follow-request-person">
+                    ${renderAvatarMarkup(request.requester, 'contact-avatar')}
+                    <span class="contact-main">
+                        <span class="contact-name">${escapeHTML(request.requester?.name || 'Unknown user')}</span>
+                        <span class="contact-meta">Wants to follow you</span>
+                    </span>
+                </div>
+                <div class="follow-request-actions">
+                    <button class="btn btn-primary btn-small" type="button" onclick="acceptFollowRequest('${escapeHTML(request._id)}')">Accept</button>
+                    <button class="btn btn-outline btn-small" type="button" onclick="rejectFollowRequest('${escapeHTML(request._id)}')">Reject</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    async function acceptFollowRequest(requestId) {
+        try {
+            await fetchApi('/follow/accept', {
+                method: 'POST',
+                body: JSON.stringify({ requestId })
+            });
+            showToast('Follow Request', 'Request accepted.');
+            await loadFollowRequests();
+            await loadMessageContacts();
+        } catch (error) {
+            alert('Could not accept request: ' + error.message);
+        }
+    }
+
+    async function rejectFollowRequest(requestId) {
+        try {
+            await fetchApi('/follow/reject', {
+                method: 'POST',
+                body: JSON.stringify({ requestId })
+            });
+            showToast('Follow Request', 'Request rejected.');
+            await loadFollowRequests();
+        } catch (error) {
+            alert('Could not reject request: ' + error.message);
+        }
+    }
+
+    async function loadMessageContacts() {
+        const contactsList = document.getElementById('contactsList');
+        if (!contactsList) return;
+
+        try {
+            const [contactsData, discoveryData] = await Promise.all([
+                fetchApi('/follow/contacts').catch(() => ({ followers: [], following: [] })),
+                fetchApi('/discovery').catch(() => ({ recommendedUsers: [] }))
+            ]);
+
+            const merged = new Map();
+            const addContact = (user, source) => {
+                if (!user || !user._id || (currentUser && String(user._id) === String(currentUser._id))) return;
+                const id = String(user._id);
+                const existing = merged.get(id);
+                if (existing) {
+                    existing.sources = Array.from(new Set([...existing.sources, source]));
+                    return;
+                }
+                merged.set(id, {
+                    _id: id,
+                    name: user.name || 'Unknown user',
+                    email: user.email || '',
+                    bio: user.bio || '',
+                    location: user.location || '',
+                    profilePhoto: user.profilePhoto || null,
+                    sources: [source]
+                });
+            };
+
+            (contactsData.following || []).forEach(user => addContact(user, 'Following'));
+            (contactsData.followers || []).forEach(user => addContact(user, 'Follower'));
+            (discoveryData.recommendedUsers || []).forEach(item => addContact(item.user, 'Skill match'));
+
+            if (pendingChatUser) {
+                addContact(pendingChatUser, pendingChatUser.source || 'Selected');
+            }
+
+            chatContacts = Array.from(merged.values()).sort((a, b) => a.name.localeCompare(b.name));
+            renderContactList();
+
+            const searchInput = document.getElementById('contactSearch');
+            searchInput.addEventListener('input', () => renderContactList(searchInput.value));
+
+            if (pendingChatUser) {
+                const pendingId = String(pendingChatUser._id);
+                pendingChatUser = null;
+                selectChatUser(pendingId);
+            }
+        } catch (error) {
+            contactsList.innerHTML = '<div class="contacts-empty">Could not load contacts right now.</div>';
+        }
+    }
+
+    function renderContactList(filter = '') {
+        const contactsList = document.getElementById('contactsList');
+        if (!contactsList) return;
+
+        const term = filter.trim().toLowerCase();
+        const visibleContacts = chatContacts.filter(user => {
+            const searchValue = `${user.name} ${user.email} ${user.location} ${user.sources.join(' ')}`.toLowerCase();
+            return searchValue.includes(term);
+        });
+
+        if (visibleContacts.length === 0) {
+            contactsList.innerHTML = '<div class="contacts-empty">No people found yet. Add skills or follow users to build your chat list.</div>';
+            return;
+        }
+
+        contactsList.innerHTML = visibleContacts.map(user => `
+            <button class="contact-item ${selectedChatUser && selectedChatUser._id === user._id ? 'active' : ''}" type="button" data-user-id="${escapeHTML(user._id)}">
+                ${renderAvatarMarkup(user, 'contact-avatar')}
+                <span class="contact-main">
+                    <span class="contact-name">${escapeHTML(user.name)}</span>
+                    <span class="contact-meta">${escapeHTML(user.sources.join(' / '))}${user.location ? ' - ' + escapeHTML(user.location) : ''}</span>
+                </span>
+            </button>
+        `).join('');
+
+        contactsList.querySelectorAll('.contact-item').forEach(item => {
+            item.addEventListener('click', () => selectChatUser(item.dataset.userId));
+        });
+    }
+
+    async function selectChatUser(userId) {
+        const contact = chatContacts.find(user => user._id === String(userId));
+        if (!contact) return;
+
+        selectedChatUser = contact;
+        renderContactList(document.getElementById('contactSearch')?.value || '');
+
+        document.getElementById('chatTitle').textContent = contact.name;
+        document.getElementById('chatSubtitle').textContent = contact.email || contact.sources.join(' / ');
+        document.getElementById('msgText').disabled = false;
+        document.getElementById('sendMessageBtn').disabled = false;
+        document.getElementById('msgText').focus();
+
+        await fetchChatHistory();
+    }
+
+    async function fetchChatHistory() {
+        if (!selectedChatUser) return;
+
+        const chatBox = document.getElementById('chatHistory');
+        chatBox.innerHTML = '<div class="chat-empty">Loading conversation...</div>';
+
+        try {
+            const msgs = await fetchApi('/messages/' + selectedChatUser._id);
+            chatBox.innerHTML = msgs.length ? '' : '<div class="chat-empty">No messages yet. Say hello when you are ready.</div>';
+            
+            msgs.forEach(msg => {
+                const isMe = String(msg.sender) === String(currentUser._id);
+                const row = document.createElement('div');
+                row.className = `message-row ${isMe ? 'is-me' : ''}`;
+                row.innerHTML = `
+                    <div class="message-bubble">
+                        ${escapeHTML(msg.text)}
+                        <span class="message-time">${new Date(msg.timestamp).toLocaleString()}</span>
+                    </div>
+                `;
+                chatBox.appendChild(row);
+            });
+            chatBox.scrollTop = chatBox.scrollHeight;
+        } catch (error) {
+            chatBox.innerHTML = '<div class="chat-empty">Failed to load this conversation.</div>';
+        }
+    }
+
+    async function sendMessage() {
+        const textInput = document.getElementById('msgText');
+        const text = textInput.value.trim();
+        if (!selectedChatUser || !text) return;
+
+        try {
+            await fetchApi('/messages', {
+                method: 'POST',
+                body: JSON.stringify({ receiver: selectedChatUser._id, text })
+            });
+            textInput.value = '';
+            fetchChatHistory();
+        } catch (error) {
+            alert('Message failed: ' + error.message);
+        }
+    }
+
+    /* --- ADMIN --- */
+
+    async function loadAdminData() {
+        const adminPage = document.getElementById('adminPage');
+        if (!adminPage) return;
+
+        if (!currentUser || currentUser.role !== 'admin') {
+            adminPage.innerHTML = `
+                <div class="page-header">
+                    <h1 class="page-title">Admin Dashboard</h1>
+                    <p class="page-subtitle">This area is only available for admin accounts.</p>
+                </div>
+                <div class="content-section">
+                    <p>Access denied.</p>
+                </div>
+            `;
+            return;
+        }
+
+        adminPage.innerHTML = `
+            <div class="page-header">
+                <h1 class="page-title">Admin Dashboard</h1>
+                <p class="page-subtitle">Managing platform data for ${escapeHTML(currentUser.email)}.</p>
+            </div>
+            <div class="content-section">
+                <div class="loading">Loading admin tools...</div>
+            </div>
+        `;
+
+        try {
+            const [summary, users, posts, projects, skills, followRequests] = await Promise.all([
+                fetchApi('/admin/summary'),
+                fetchApi('/admin/users'),
+                fetchApi('/admin/posts'),
+                fetchApi('/admin/projects'),
+                fetchApi('/admin/skills'),
+                fetchApi('/admin/follow-requests')
+            ]);
+
+            adminDataCache = { summary, users, posts, projects, skills, followRequests };
+            renderAdminDashboard();
+        } catch (error) {
+            adminPage.innerHTML = `
+                <div class="page-header">
+                    <h1 class="page-title">Admin Dashboard</h1>
+                    <p class="page-subtitle">Managing platform data for ${escapeHTML(currentUser.email)}.</p>
+                </div>
+                <div class="content-section">
+                    <p style="color:var(--error-color);">Failed to load admin data: ${escapeHTML(error.message)}</p>
+                </div>
+            `;
+        }
+    }
+
+    function renderAdminDashboard() {
+        const adminPage = document.getElementById('adminPage');
+        if (!adminPage || !adminDataCache) return;
+
+        const { summary, users, posts, projects, skills, followRequests } = adminDataCache;
+
+        adminPage.innerHTML = `
+            <div class="page-header">
+                <h1 class="page-title">Admin Dashboard</h1>
+                <p class="page-subtitle">Managing platform data for ${escapeHTML(currentUser.email)}.</p>
+            </div>
+
+            <div class="content-section">
+                <div class="section-header">
+                    <h2 class="section-title">Platform Summary</h2>
+                    <button class="btn btn-outline" type="button" onclick="loadAdminData()">Refresh</button>
+                </div>
+                <div class="admin-summary-grid">
+                    <div class="admin-summary-card"><strong>${summary.users}</strong><br><span class="admin-meta">Users</span></div>
+                    <div class="admin-summary-card"><strong>${summary.posts}</strong><br><span class="admin-meta">Posts</span></div>
+                    <div class="admin-summary-card"><strong>${summary.projects}</strong><br><span class="admin-meta">Projects</span></div>
+                    <div class="admin-summary-card"><strong>${summary.skills}</strong><br><span class="admin-meta">Skills</span></div>
+                    <div class="admin-summary-card"><strong>${summary.followRequests}</strong><br><span class="admin-meta">Follow Requests</span></div>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <div class="section-header"><h2 class="section-title">Users</h2></div>
+                <div class="admin-section-grid">${users.map(renderAdminUserCard).join('')}</div>
+            </div>
+
+            <div class="content-section">
+                <div class="section-header"><h2 class="section-title">Posts</h2></div>
+                <div class="admin-section-grid">${posts.map(renderAdminPostCard).join('')}</div>
+            </div>
+
+            <div class="content-section">
+                <div class="section-header"><h2 class="section-title">Projects</h2></div>
+                <div class="admin-section-grid">${projects.map(renderAdminProjectCard).join('')}</div>
+            </div>
+
+            <div class="content-section">
+                <div class="section-header"><h2 class="section-title">Skills</h2></div>
+                <div class="admin-section-grid">${skills.map(renderAdminSkillCard).join('')}</div>
+            </div>
+
+            <div class="content-section">
+                <div class="section-header"><h2 class="section-title">Follow Requests</h2></div>
+                <div class="admin-section-grid">${followRequests.map(renderAdminFollowRequestCard).join('')}</div>
+            </div>
+        `;
+    }
+
+    function renderAdminUserCard(user) {
+        const isCurrentAdmin = currentUser && String(currentUser._id) === String(user._id);
+        return `
+            <div class="admin-item-card">
+                <div>
+                    <strong>${escapeHTML(user.name)}</strong>
+                    <div class="admin-meta">${escapeHTML(user.email)} • ${escapeHTML(user.role || 'user')}</div>
+                </div>
+                <div class="admin-inline-grid">
+                    <input class="form-input" id="admin-user-name-${user._id}" value="${escapeHTML(user.name)}" placeholder="Name">
+                    <input class="form-input" id="admin-user-email-${user._id}" value="${escapeHTML(user.email)}" placeholder="Email">
+                    <input class="form-input" id="admin-user-location-${user._id}" value="${escapeHTML(user.location || '')}" placeholder="Location">
+                    <select class="form-input" id="admin-user-role-${user._id}">
+                        <option value="user" ${user.role === 'user' ? 'selected' : ''}>user</option>
+                        <option value="admin" ${user.role === 'admin' ? 'selected' : ''}>admin</option>
+                    </select>
+                </div>
+                <textarea class="form-input form-textarea" id="admin-user-bio-${user._id}" placeholder="Bio">${escapeHTML(user.bio || '')}</textarea>
+                <div class="admin-actions">
+                    <button class="btn btn-primary btn-small" type="button" onclick="saveAdminUser('${user._id}')">Save User</button>
+                    <button class="btn btn-outline btn-small" type="button" ${isCurrentAdmin ? 'disabled' : `onclick="deleteAdminUser('${user._id}')"`}>${isCurrentAdmin ? 'Current Admin' : 'Delete User'}</button>
+                </div>
+            </div>
+        `;
+    }
+
+    function renderAdminPostCard(post) {
+        return `
+            <div class="admin-item-card">
+                <div>
+                    <strong>${escapeHTML(post.user?.name || 'Unknown user')}</strong>
+                    <div class="admin-meta">${escapeHTML(post.user?.email || '')}</div>
+                </div>
+                <textarea class="form-input form-textarea" id="admin-post-content-${post._id}">${escapeHTML(post.content || '')}</textarea>
+                <div class="admin-actions">
+                    <button class="btn btn-primary btn-small" type="button" onclick="saveAdminPost('${post._id}')">Save Post</button>
+                    <button class="btn btn-outline btn-small" type="button" onclick="deleteAdminPost('${post._id}')">Delete Post</button>
+                </div>
+            </div>
+        `;
+    }
+
+    function renderAdminProjectCard(project) {
+        return `
+            <div class="admin-item-card">
+                <div>
+                    <strong>${escapeHTML(project.user?.name || 'Unknown user')}</strong>
+                    <div class="admin-meta">${escapeHTML(project.user?.email || '')}</div>
+                </div>
+                <div class="admin-inline-grid">
+                    <input class="form-input" id="admin-project-name-${project._id}" value="${escapeHTML(project.name || '')}" placeholder="Project name">
+                    <select class="form-input" id="admin-project-status-${project._id}">
+                        <option value="planning" ${project.status === 'planning' ? 'selected' : ''}>planning</option>
+                        <option value="active" ${project.status === 'active' ? 'selected' : ''}>active</option>
+                        <option value="pending" ${project.status === 'pending' ? 'selected' : ''}>pending</option>
+                        <option value="completed" ${project.status === 'completed' ? 'selected' : ''}>completed</option>
+                    </select>
+                    <input class="form-input" id="admin-project-progress-${project._id}" type="number" min="0" max="100" value="${escapeHTML(project.progress)}" placeholder="Progress">
+                </div>
+                <input class="form-input" id="admin-project-skills-${project._id}" value="${escapeHTML((project.requiredSkills || []).join(', '))}" placeholder="Required skills">
+                <textarea class="form-input form-textarea" id="admin-project-description-${project._id}">${escapeHTML(project.description || '')}</textarea>
+                <div class="admin-actions">
+                    <button class="btn btn-primary btn-small" type="button" onclick="saveAdminProject('${project._id}')">Save Project</button>
+                    <button class="btn btn-outline btn-small" type="button" onclick="deleteAdminProject('${project._id}')">Delete Project</button>
+                </div>
+            </div>
+        `;
+    }
+
+    function renderAdminSkillCard(skill) {
+        return `
+            <div class="admin-item-card">
+                <div>
+                    <strong>${escapeHTML(skill.user?.name || 'Unknown user')}</strong>
+                    <div class="admin-meta">${escapeHTML(skill.user?.email || '')}</div>
+                </div>
+                <div class="admin-inline-grid">
+                    <input class="form-input" id="admin-skill-name-${skill._id}" value="${escapeHTML(skill.name || '')}" placeholder="Skill name">
+                    <input class="form-input" id="admin-skill-level-${skill._id}" type="number" min="1" max="5" value="${escapeHTML(skill.level)}" placeholder="Level">
+                </div>
+                <textarea class="form-input form-textarea" id="admin-skill-description-${skill._id}">${escapeHTML(skill.description || '')}</textarea>
+                <div class="admin-actions">
+                    <button class="btn btn-primary btn-small" type="button" onclick="saveAdminSkill('${skill._id}')">Save Skill</button>
+                    <button class="btn btn-outline btn-small" type="button" onclick="deleteAdminSkill('${skill._id}')">Delete Skill</button>
+                </div>
+            </div>
+        `;
+    }
+
+    function renderAdminFollowRequestCard(request) {
+        return `
+            <div class="admin-item-card">
+                <div>
+                    <strong>${escapeHTML(request.requester?.name || 'Unknown requester')}</strong>
+                    <div class="admin-meta">to ${escapeHTML(request.receiver?.name || 'Unknown receiver')}</div>
+                </div>
+                <div class="admin-inline-grid">
+                    <input class="form-input" value="${escapeHTML(request.requester?.email || '')}" disabled>
+                    <input class="form-input" value="${escapeHTML(request.receiver?.email || '')}" disabled>
+                    <select class="form-input" id="admin-follow-status-${request._id}">
+                        <option value="pending" ${request.status === 'pending' ? 'selected' : ''}>pending</option>
+                        <option value="accepted" ${request.status === 'accepted' ? 'selected' : ''}>accepted</option>
+                        <option value="rejected" ${request.status === 'rejected' ? 'selected' : ''}>rejected</option>
+                    </select>
+                </div>
+                <div class="admin-actions">
+                    <button class="btn btn-primary btn-small" type="button" onclick="saveAdminFollowRequest('${request._id}')">Save Request</button>
+                    <button class="btn btn-outline btn-small" type="button" onclick="deleteAdminFollowRequest('${request._id}')">Delete Request</button>
+                </div>
+            </div>
+        `;
+    }
+
+    async function saveAdminUser(userId) {
+        try {
+            await fetchApi(`/admin/users/${userId}`, {
+                method: 'PUT',
+                body: JSON.stringify({
+                    name: document.getElementById(`admin-user-name-${userId}`).value.trim(),
+                    email: document.getElementById(`admin-user-email-${userId}`).value.trim(),
+                    location: document.getElementById(`admin-user-location-${userId}`).value.trim(),
+                    role: document.getElementById(`admin-user-role-${userId}`).value,
+                    bio: document.getElementById(`admin-user-bio-${userId}`).value.trim()
+                })
+            });
+            await fetchCurrentUser();
+            await loadAdminData();
+            showToast('Admin', 'User updated.');
+        } catch (error) {
+            alert('Failed to update user: ' + error.message);
+        }
+    }
+
+    async function deleteAdminUser(userId) {
+        if (!confirm('Delete this user and all related data?')) return;
+        try {
+            await fetchApi(`/admin/users/${userId}`, { method: 'DELETE' });
+            await loadAdminData();
+            showToast('Admin', 'User deleted.');
+        } catch (error) {
+            alert('Failed to delete user: ' + error.message);
+        }
+    }
+
+    async function saveAdminPost(postId) {
+        try {
+            await fetchApi(`/admin/posts/${postId}`, {
+                method: 'PUT',
+                body: JSON.stringify({
+                    content: document.getElementById(`admin-post-content-${postId}`).value.trim()
+                })
+            });
+            await loadAdminData();
+            showToast('Admin', 'Post updated.');
+        } catch (error) {
+            alert('Failed to update post: ' + error.message);
+        }
+    }
+
+    async function deleteAdminPost(postId) {
+        if (!confirm('Delete this post?')) return;
+        try {
+            await fetchApi(`/admin/posts/${postId}`, { method: 'DELETE' });
+            await loadAdminData();
+            showToast('Admin', 'Post deleted.');
+        } catch (error) {
+            alert('Failed to delete post: ' + error.message);
+        }
+    }
+
+    async function saveAdminProject(projectId) {
+        try {
+            await fetchApi(`/admin/projects/${projectId}`, {
+                method: 'PUT',
+                body: JSON.stringify({
+                    name: document.getElementById(`admin-project-name-${projectId}`).value.trim(),
+                    description: document.getElementById(`admin-project-description-${projectId}`).value.trim(),
+                    status: document.getElementById(`admin-project-status-${projectId}`).value,
+                    progress: Number(document.getElementById(`admin-project-progress-${projectId}`).value),
+                    requiredSkills: document.getElementById(`admin-project-skills-${projectId}`).value.split(',').map(skill => skill.trim()).filter(Boolean)
+                })
+            });
+            await loadAdminData();
+            showToast('Admin', 'Project updated.');
+        } catch (error) {
+            alert('Failed to update project: ' + error.message);
+        }
+    }
+
+    async function deleteAdminProject(projectId) {
+        if (!confirm('Delete this project?')) return;
+        try {
+            await fetchApi(`/admin/projects/${projectId}`, { method: 'DELETE' });
+            await loadAdminData();
+            showToast('Admin', 'Project deleted.');
+        } catch (error) {
+            alert('Failed to delete project: ' + error.message);
+        }
+    }
+
+    async function saveAdminSkill(skillId) {
+        try {
+            await fetchApi(`/admin/skills/${skillId}`, {
+                method: 'PUT',
+                body: JSON.stringify({
+                    name: document.getElementById(`admin-skill-name-${skillId}`).value.trim(),
+                    level: Number(document.getElementById(`admin-skill-level-${skillId}`).value),
+                    description: document.getElementById(`admin-skill-description-${skillId}`).value.trim()
+                })
+            });
+            await loadAdminData();
+            showToast('Admin', 'Skill updated.');
+        } catch (error) {
+            alert('Failed to update skill: ' + error.message);
+        }
+    }
+
+    async function deleteAdminSkill(skillId) {
+        if (!confirm('Delete this skill?')) return;
+        try {
+            await fetchApi(`/admin/skills/${skillId}`, { method: 'DELETE' });
+            await loadAdminData();
+            showToast('Admin', 'Skill deleted.');
+        } catch (error) {
+            alert('Failed to delete skill: ' + error.message);
+        }
+    }
+
+    async function saveAdminFollowRequest(requestId) {
+        try {
+            await fetchApi(`/admin/follow-requests/${requestId}`, {
+                method: 'PUT',
+                body: JSON.stringify({
+                    status: document.getElementById(`admin-follow-status-${requestId}`).value
+                })
+            });
+            await loadAdminData();
+            showToast('Admin', 'Follow request updated.');
+        } catch (error) {
+            alert('Failed to update follow request: ' + error.message);
+        }
+    }
+
+    async function deleteAdminFollowRequest(requestId) {
+        if (!confirm('Delete this follow request?')) return;
+        try {
+            await fetchApi(`/admin/follow-requests/${requestId}`, { method: 'DELETE' });
+            await loadAdminData();
+            showToast('Admin', 'Follow request deleted.');
+        } catch (error) {
+            alert('Failed to delete follow request: ' + error.message);
+        }
+    }
+
+    /* --- DISCOVERY --- */
+
+    function renderPersonCard(user, sourceLabel = '') {
+        const skills = user.skills || [];
+        return `
+            <div class="person-card" onclick="openPublicProfile('${escapeHTML(user._id)}')">
+                <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
+                    ${renderAvatarMarkup(user, 'contact-avatar')}
+                    <div style="min-width:0;">
+                        <h4 style="margin:0; font-size:1.05rem;">${escapeHTML(user.name)}</h4>
+                        <small style="color:var(--text-muted)">${escapeHTML(user.location || sourceLabel || 'Remote')}</small>
+                    </div>
+                </div>
+                <p style="font-size:0.9rem; color:var(--text-secondary); margin-bottom:12px;">${escapeHTML(user.bio || 'No bio available')}</p>
+                <div style="display:flex; flex-wrap:wrap; gap:5px; min-height:24px;">
+                    ${skills.slice(0, 4).map(skill => `<span style="font-size:0.7rem; background:rgba(102,126,234,0.1); color:var(--primary-color); padding:2px 8px; border-radius:10px;">${escapeHTML(skill.name || skill)}</span>`).join('')}
+                </div>
+                <div style="display:flex; gap:8px; margin-top:14px;">
+                    ${renderDiscoveryFollowButton(user._id, user.relationship)}
+                    <button class="btn ${user.isSaved ? 'btn-primary' : 'btn-outline'} btn-small" type="button" onclick="event.stopPropagation(); toggleSavedProfile('${escapeHTML(user._id)}')">${user.isSaved ? 'Saved' : 'Save'}</button>
+                    <button class="btn btn-outline btn-small" type="button" onclick="event.stopPropagation(); openChatWithUser({ _id: '${escapeHTML(user._id)}', name: '${escapeHTML(user.name)}', email: '${escapeHTML(user.email || '')}', location: '${escapeHTML(user.location || '')}' }, '${escapeHTML(sourceLabel || 'Search')}')">Message</button>
+                </div>
+            </div>
+        `;
+    }
+
+    async function searchPeople() {
+        const input = document.getElementById('peopleSearchInput');
+        const results = document.getElementById('peopleSearchResults');
+        const query = input.value.trim();
+
+        if (!query) {
+            results.innerHTML = '<p style="color:var(--text-muted);">Type a name, skill, location, or email to search.</p>';
+            return;
+        }
+
+        results.innerHTML = '<div class="loading">Searching people...</div>';
+
+        try {
+            const users = await fetchApi(`/users/search?q=${encodeURIComponent(query)}`);
+            results.innerHTML = users.length
+                ? users.map(user => renderPersonCard(user, 'Search result')).join('')
+                : '<p style="color:var(--text-muted);">No people found. Try another skill or name.</p>';
+        } catch (error) {
+            results.innerHTML = '<p style="color:var(--error-color);">Search failed. Please try again.</p>';
+        }
+    }
+
+    async function loadDiscoveryData() {
+        const usersList = document.getElementById('recommendedUsers');
+        const projectsList = document.getElementById('matchingProjects');
+        
+        usersList.innerHTML = '<div class="loading">Finding matches...</div>';
+        projectsList.innerHTML = '<div class="loading">Scanning projects...</div>';
+
+        try {
+            const [data, followData, projectRequestData] = await Promise.all([
+                fetchApi('/discovery'),
+                fetchApi('/follow/requests').catch(() => ({ incoming: [], outgoing: [] })),
+                fetchApi('/projects/requests').catch(() => ({ incoming: [], outgoing: [] }))
+            ]);
+            outgoingFollowRequests = followData.outgoing || [];
+            incomingFollowRequests = followData.incoming || [];
+            incomingProjectRequests = projectRequestData.incoming || [];
+            outgoingProjectRequests = projectRequestData.outgoing || [];
+            
+            // Render Users
+            usersList.innerHTML = data.recommendedUsers.length ? '' : '<p style="color:var(--text-muted);">No matching professionals found yet. Try adding more skills!</p>';
+            data.recommendedUsers.forEach(item => {
+                const card = document.createElement('div');
+                card.innerHTML = renderPersonCard({
+                    ...item.user,
+                    skills: item.matchingSkills.map(name => ({ name }))
+                }, `${item.matchCount} skill match${item.matchCount > 1 ? 'es' : ''}`);
+                const personCard = card.firstElementChild;
+                personCard.classList.add('fade-in-up');
+                usersList.appendChild(personCard);
+            });
+
+            // Render Projects
+            projectsList.innerHTML = data.recommendedProjects.length ? '' : '<p style="color:var(--text-muted);">No matching projects found yet.</p>';
+            data.recommendedProjects.forEach(proj => {
+                const card = document.createElement('div');
+                card.className = 'project-card fade-in-up';
+                card.innerHTML = `
+                    ${renderProjectBanner(proj)}
+                    <div class="project-header">
+                        <h3 class="project-title">${escapeHTML(proj.name)}</h3>
+                        <span class="project-status status-${escapeHTML(proj.status)}">${escapeHTML(proj.status)}</span>
+                    </div>
+                    <div class="project-body">
+                        <p class="project-description">${escapeHTML(proj.description || 'No description provided yet.')}</p>
+                        <div style="margin-top:12px;">
+                            <strong>Owner:</strong> ${escapeHTML(proj.user.name)}
+                        </div>
+                        <div class="project-chip-row" style="margin-top:10px;">
+                            <span class="project-chip">${(proj.collaborators || []).length} collaborator${(proj.collaborators || []).length === 1 ? '' : 's'}</span>
+                            ${renderProjectRequestStatusChip(proj)}
+                        </div>
+                        <div style="margin-top:8px; display:flex; flex-wrap:wrap; gap:5px;">
+                            ${proj.requiredSkills.map(s => `<span style="font-size:0.7rem; background:rgba(16,185,129,0.1); color:#10b981; padding:2px 8px; border-radius:10px;">${escapeHTML(s)}</span>`).join('')}
+                        </div>
+                        <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:15px;">
+                            ${renderProjectRequestButton(proj)}
+                            <button class="btn ${proj.isSaved ? 'btn-primary' : 'btn-outline'}" type="button" onclick="toggleSavedProject('${escapeHTML(proj._id)}')">${proj.isSaved ? 'Saved' : 'Save'}</button>
+                            <button class="btn btn-outline" type="button" onclick="contactProjectOwner('${proj.user._id}', '${escapeHTML(proj.user.name)}')">Contact Owner</button>
+                        </div>
+                    </div>
+                `;
+                projectsList.appendChild(card);
+            });
+
+        } catch (error) {
+            console.error('Discovery UI Error:', error);
+            usersList.innerHTML = '<p style="color:var(--error-color);">Failed to load recommendations.</p>';
+            projectsList.innerHTML = '<p style="color:var(--error-color);">Failed to load projects.</p>';
+        }
+    }
+
+    function getFollowStatus(userId) {
+        const id = String(userId);
+        if (currentUser?.following?.some(followedId => String(followedId) === id)) return 'following';
+        if (outgoingFollowRequests.some(request => String(request.receiver?._id || request.receiver) === id)) return 'pending';
+        if (incomingFollowRequests.some(request => String(request.requester?._id || request.requester) === id)) return 'incoming';
+        return 'none';
+    }
+
+    function renderDiscoveryFollowButton(userId, relationship) {
+        const status = relationship || getFollowStatus(userId);
+        if (status === 'following') {
+            return '<button class="btn btn-outline btn-small" type="button" disabled>Following</button>';
+        }
+        if (status === 'pending') {
+            return '<button class="btn btn-outline btn-small" type="button" disabled>Pending</button>';
+        }
+        if (status === 'incoming') {
+            return `<button class="btn btn-primary btn-small" type="button" onclick="event.stopPropagation(); openPage('messages')">Respond</button>`;
+        }
+        return `<button class="btn btn-primary btn-small" type="button" onclick="event.stopPropagation(); sendFollowRequest('${escapeHTML(userId)}')">Follow</button>`;
+    }
+
+    function getProjectRequestStatus(project) {
+        const projectId = String(project._id);
+        if ((project.collaborators || []).some(userId => String(userId?._id || userId) === String(currentUser?._id))) {
+            return 'joined';
+        }
+
+        const outgoingRequest = outgoingProjectRequests.find(request => String(request.project?._id || request.project) === projectId);
+        if (!outgoingRequest) return 'none';
+        return outgoingRequest.status || 'pending';
+    }
+
+    function renderProjectRequestStatusChip(project) {
+        const status = getProjectRequestStatus(project);
+        if (status === 'joined') return '<span class="project-chip success">Joined</span>';
+        if (status === 'accepted') return '<span class="project-chip success">Accepted</span>';
+        if (status === 'pending') return '<span class="project-chip warning">Pending request</span>';
+        if (status === 'rejected') return '<span class="project-chip muted">Request declined</span>';
+        return '<span class="project-chip muted">Open to connect</span>';
+    }
+
+    function renderProjectRequestButton(project) {
+        const status = getProjectRequestStatus(project);
+        if (status === 'joined' || status === 'accepted') {
+            return '<button class="btn btn-outline" type="button" disabled>Joined</button>';
+        }
+        if (status === 'pending') {
+            return '<button class="btn btn-outline" type="button" disabled>Request Pending</button>';
+        }
+        return `<button class="btn btn-primary" type="button" onclick="requestJoinProject('${escapeHTML(project._id)}', '${escapeHTML(project.name)}')">${status === 'rejected' ? 'Request Again' : 'Request to Join'}</button>`;
+    }
+
+    async function requestJoinProject(projectId, projectName) {
+        const note = prompt(`Add a short note for "${projectName}" (optional):`, '');
+        if (note === null) return;
+
+        try {
+            await fetchApi(`/projects/${projectId}/request-join`, {
+                method: 'POST',
+                body: JSON.stringify({ message: note.trim() })
+            });
+            showToast('Projects', 'Collaboration request sent.');
+            if (document.getElementById('discoveryPage')?.classList.contains('active')) {
+                loadDiscoveryData();
+            }
+            if (document.getElementById('projectsPage')?.classList.contains('active')) {
+                loadProjectsData();
+            }
+            refreshNotificationsBadge();
+        } catch (error) {
+            alert('Could not send project request: ' + error.message);
+        }
+    }
+
+    async function sendFollowRequest(targetId) {
+        try {
+            await fetchApi('/follow/request', {
+                method: 'POST',
+                body: JSON.stringify({ targetId })
+            });
+            showToast('Follow Request', 'Request sent.');
+            if (document.getElementById('discoveryPage')?.classList.contains('active')) {
+                loadDiscoveryData();
+                const searchInput = document.getElementById('peopleSearchInput');
+                if (searchInput?.value.trim()) searchPeople();
+            }
+            if (document.getElementById('publicProfileModal')?.classList.contains('active')) {
+                openPublicProfile(targetId);
+            }
+        } catch (error) {
+            alert('Could not send follow request: ' + error.message);
+        }
+    }
+
+    async function openPublicProfile(userId) {
+        const modal = document.getElementById('publicProfileModal');
+        const content = document.getElementById('publicProfileContent');
+        modal.classList.add('active');
+        content.innerHTML = '<div class="loading">Loading profile...</div>';
+
+        try {
+            const data = await fetchApi(`/users/${userId}/public`);
+            const user = data.user;
+            const skills = data.skills || [];
+            const projects = data.projects || [];
+
+            content.innerHTML = `
+                <div class="profile-summary">
+                    <div class="profile-headline">
+                        ${renderAvatarMarkup(user, 'profile-avatar-large')}
+                        <div style="min-width:0; flex:1;">
+                            <h2 style="margin:0;">${escapeHTML(user.name)}</h2>
+                            <p style="color:var(--text-muted); margin:0.25rem 0;">${escapeHTML(user.location || 'Remote')} ${user.email ? '- ' + escapeHTML(user.email) : ''}</p>
+                            <p style="color:var(--text-secondary); margin-top:0.75rem;">${escapeHTML(user.bio || 'No bio yet.')}</p>
+                        </div>
+                    </div>
+
+                    <div class="profile-stats">
+                        <div class="profile-stat"><strong>${user.followersCount}</strong><br><span style="color:var(--text-muted);">Followers</span></div>
+                        <div class="profile-stat"><strong>${user.followingCount}</strong><br><span style="color:var(--text-muted);">Following</span></div>
+                    </div>
+
+                    <div style="display:flex; gap:0.75rem; flex-wrap:wrap;">
+                        ${renderDiscoveryFollowButton(user._id, data.relationship)}
+                        <button class="btn ${user.isSaved ? 'btn-primary' : 'btn-outline'}" type="button" onclick="toggleSavedProfile('${escapeHTML(user._id)}')">${user.isSaved ? 'Saved Profile' : 'Save Profile'}</button>
+                        <button class="btn btn-outline" type="button" onclick="closeModal('publicProfileModal'); openChatWithUser({ _id: '${escapeHTML(user._id)}', name: '${escapeHTML(user.name)}', email: '${escapeHTML(user.email || '')}', location: '${escapeHTML(user.location || '')}' }, 'Public profile')">Message</button>
+                    </div>
+
+                    <div>
+                        <h3 style="font-size:1.1rem;">Skills</h3>
+                        <div class="profile-list">
+                            ${skills.length ? skills.map(skill => `
+                                <div class="profile-list-item">
+                                    <strong>${escapeHTML(skill.name)}</strong> - Level ${escapeHTML(skill.level)}
+                                    <p style="color:var(--text-muted); margin:0.25rem 0 0;">${escapeHTML(skill.description || '')}</p>
+                                </div>
+                            `).join('') : '<p style="color:var(--text-muted);">No skills added yet.</p>'}
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 style="font-size:1.1rem;">Projects</h3>
+                        <div class="profile-list">
+                            ${projects.length ? projects.map(project => `
+                                <div class="profile-list-item">
+                                    ${renderProjectBanner(project)}
+                                    <strong>${escapeHTML(project.name)}</strong>
+                                    <p style="color:var(--text-muted); margin:0.25rem 0;">${escapeHTML(project.description || '')}</p>
+                                    <small style="color:var(--primary-color);">${escapeHTML(project.status)} - ${escapeHTML(project.progress)}%</small>
+                                    <div style="display:flex; gap:0.75rem; flex-wrap:wrap; margin-top:0.75rem;">
+                                        <button class="btn ${project.isSaved ? 'btn-primary' : 'btn-outline'} btn-small" type="button" onclick="toggleSavedProject('${escapeHTML(project._id)}')">${project.isSaved ? 'Saved' : 'Save'}</button>
+                                    </div>
+                                </div>
+                            `).join('') : '<p style="color:var(--text-muted);">No projects shared yet.</p>'}
+                        </div>
+                    </div>
+                </div>
+            `;
+        } catch (error) {
+            content.innerHTML = '<p style="color:var(--error-color);">Could not load this profile.</p>';
+        }
+    }
+
+    function openChatWithUser(user, source = 'Selected') {
+        pendingChatUser = {
+            _id: user._id,
+            name: user.name || 'Unknown user',
+            email: user.email || '',
+            bio: user.bio || '',
+            location: user.location || '',
+            profilePhoto: user.profilePhoto || null,
+            source
+        };
+        document.querySelector('[data-page="messages"]').click();
+    }
+
+    function contactProjectOwner(ownerId, ownerName = 'Project owner') {
+        openChatWithUser({ _id: ownerId, name: ownerName }, 'Project owner');
+    }
+
+    // Modal Helpers
+    function openProfileModal() {
+        renderProfilePhotoPreview();
+        document.getElementById('profileModal').classList.add('active');
+    }
+    function openSkillModal() { document.getElementById('skillModal').classList.add('active'); }
+    function openProjectModal() {
+        renderProjectBannerPreview();
+        document.getElementById('projectModal').classList.add('active');
+    }
+    function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+
+    </script>
+</body>
+</html>

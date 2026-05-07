@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="https://public-frontend-cos.metadl.com/mgx/img/favicon.png" type="image/png">
+    <title>SkillLink - Connect, Learn, Grow</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+    <button class="toggle-mode" onclick="toggleMode()" aria-label="Toggle dark/light mode">
+        <span class="mode-icon">🌙</span>
+    </button>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <div class="logo-icon">🔗</div>
+                <span class="logo-text">SkillLink</span>
+            </div>
+            <div class="nav-links">
+                <a href="#home" class="nav-link active">Home</a>
+                <a href="#features" class="nav-link">Features</a>
+                <a href="#about" class="nav-link">About</a>
+                <a href="login.html" class="nav-link login-btn">Login</a>
+                <a href="register.html" class="nav-link register-btn">Get Started</a>
+            </div>
+            <div class="mobile-menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1 class="hero-title">
+                    Connect Skills,<br>
+                    <span class="gradient-text">Build Futures</span>
+                </h1>
+                <p class="hero-description">
+                    SkillLink is the premier platform connecting talented professionals with opportunities. 
+                    Whether you're looking to showcase your expertise or find the perfect skill match, 
+                    we make meaningful connections happen.
+                </p>
+                <div class="hero-buttons">
+                    <a href="register.html" class="btn btn-primary">Start Your Journey</a>
+                    <a href="#features" class="btn btn-secondary">Learn More</a>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="floating-card card-1">
+                    <div class="card-icon">💼</div>
+                    <div class="card-text">Find Opportunities</div>
+                </div>
+                <div class="floating-card card-2">
+                    <div class="card-icon">🎯</div>
+                    <div class="card-text">Match Skills</div>
+                </div>
+                <div class="floating-card card-3">
+                    <div class="card-icon">🚀</div>
+                    <div class="card-text">Grow Career</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="container">
+            <h2 class="section-title">Why Choose SkillLink?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3>Smart Matching</h3>
+                    <p>Our AI-powered algorithm connects you with the most relevant opportunities based on your skills and preferences.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🌐</div>
+                    <h3>Global Network</h3>
+                    <p>Access a worldwide community of professionals and organizations looking for talent like yours.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📈</div>
+                    <h3>Career Growth</h3>
+                    <p>Track your progress, build your portfolio, and advance your career with our comprehensive tools.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3>Secure Platform</h3>
+                    <p>Your data and privacy are protected with enterprise-grade security and encryption.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💬</div>
+                    <h3>Direct Communication</h3>
+                    <p>Connect directly with potential employers and collaborators through our integrated messaging system.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Real-time Updates</h3>
+                    <p>Get instant notifications about new opportunities and messages that matter to you.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about">
+        <div class="container">
+            <div class="about-content">
+                <div class="about-text">
+                    <h2 class="section-title">About SkillLink</h2>
+                    <p class="about-description">
+                        SkillLink was founded with a simple mission: to bridge the gap between talent and opportunity. 
+                        In today's fast-paced digital world, finding the right skills or the right opportunities 
+                        shouldn't be a challenge.
+                    </p>
+                    <p class="about-description">
+                        Our platform leverages cutting-edge technology to create meaningful connections that drive 
+                        success for both individuals and organizations. Whether you're a freelancer, job seeker, 
+                        or company looking for talent, SkillLink is your gateway to endless possibilities.
+                    </p>
+                    <div class="stats">
+                        <div class="stat">
+                            <div class="stat-number">10K+</div>
+                            <div class="stat-label">Active Users</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-number">500+</div>
+                            <div class="stat-label">Companies</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-number">95%</div>
+                            <div class="stat-label">Success Rate</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="about-visual">
+                    <div class="about-image">
+                        <div class="image-placeholder">
+                            <div class="placeholder-icon">🚀</div>
+                            <div class="placeholder-text">Innovation at Work</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta">
+        <div class="container">
+            <div class="cta-content">
+                <h2>Ready to Transform Your Career?</h2>
+                <p>Join thousands of professionals who have already discovered their perfect match on SkillLink.</p>
+                <div class="cta-buttons">
+                    <a href="register.html" class="btn btn-primary">Get Started Now</a>
+                    <a href="login.html" class="btn btn-outline">Sign In</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="logo">
+                        <div class="logo-icon">🔗</div>
+                        <span class="logo-text">SkillLink</span>
+                    </div>
+                    <p>Connecting talent with opportunity, one skill at a time.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Platform</h4>
+                    <ul>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#about">About</a></li>
+                        <li><a href="register.html">Sign Up</a></li>
+                        <li><a href="login.html">Login</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Connect</h4>
+                    <ul>
+                        <li><a href="#">Twitter</a></li>
+                        <li><a href="#">LinkedIn</a></li>
+                        <li><a href="#">GitHub</a></li>
+                        <li><a href="#">Blog</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 SkillLink. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="./config.js"></script>
+    <script src="./script.js"></script>
+</body>
+
+</html>
