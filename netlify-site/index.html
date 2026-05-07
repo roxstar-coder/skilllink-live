@@ -5,215 +5,269 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="https://public-frontend-cos.metadl.com/mgx/img/favicon.png" type="image/png">
-    <title>SkillLink - Connect, Learn, Grow</title>
+    <title>Login | SkillLink</title>
     <link rel="stylesheet" href="./style.css">
 </head>
 
-<body>
+<body class="auth-page">
     <button class="toggle-mode" onclick="toggleMode()" aria-label="Toggle dark/light mode">
-        <span class="mode-icon">🌙</span>
+        <span class="mode-icon">Moon</span>
     </button>
 
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="logo">
-                <div class="logo-icon">🔗</div>
-                <span class="logo-text">SkillLink</span>
-            </div>
-            <div class="nav-links">
-                <a href="#home" class="nav-link active">Home</a>
-                <a href="#features" class="nav-link">Features</a>
-                <a href="#about" class="nav-link">About</a>
-                <a href="login.html" class="nav-link login-btn">Login</a>
-                <a href="register.html" class="nav-link register-btn">Get Started</a>
-            </div>
-            <div class="mobile-menu-toggle">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Hero Section -->
-    <section id="home" class="hero">
-        <div class="hero-container">
-            <div class="hero-content">
-                <h1 class="hero-title">
-                    Connect Skills,<br>
-                    <span class="gradient-text">Build Futures</span>
-                </h1>
-                <p class="hero-description">
-                    SkillLink is the premier platform connecting talented professionals with opportunities. 
-                    Whether you're looking to showcase your expertise or find the perfect skill match, 
-                    we make meaningful connections happen.
-                </p>
-                <div class="hero-buttons">
-                    <a href="register.html" class="btn btn-primary">Start Your Journey</a>
-                    <a href="#features" class="btn btn-secondary">Learn More</a>
+    <div class="auth-container">
+        <div class="auth-visual">
+            <div class="visual-content">
+                <div class="logo">
+                    <div class="logo-icon">SL</div>
+                    <span class="logo-text">SkillLink</span>
                 </div>
-            </div>
-            <div class="hero-visual">
-                <div class="floating-card card-1">
-                    <div class="card-icon">💼</div>
-                    <div class="card-text">Find Opportunities</div>
-                </div>
-                <div class="floating-card card-2">
-                    <div class="card-icon">🎯</div>
-                    <div class="card-text">Match Skills</div>
-                </div>
-                <div class="floating-card card-3">
-                    <div class="card-icon">🚀</div>
-                    <div class="card-text">Grow Career</div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Features Section -->
-    <section id="features" class="features">
-        <div class="container">
-            <h2 class="section-title">Why Choose SkillLink?</h2>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">🎯</div>
-                    <h3>Smart Matching</h3>
-                    <p>Our AI-powered algorithm connects you with the most relevant opportunities based on your skills and preferences.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">🌐</div>
-                    <h3>Global Network</h3>
-                    <p>Access a worldwide community of professionals and organizations looking for talent like yours.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">📈</div>
-                    <h3>Career Growth</h3>
-                    <p>Track your progress, build your portfolio, and advance your career with our comprehensive tools.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">🔒</div>
-                    <h3>Secure Platform</h3>
-                    <p>Your data and privacy are protected with enterprise-grade security and encryption.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">💬</div>
-                    <h3>Direct Communication</h3>
-                    <p>Connect directly with potential employers and collaborators through our integrated messaging system.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">⚡</div>
-                    <h3>Real-time Updates</h3>
-                    <p>Get instant notifications about new opportunities and messages that matter to you.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- About Section -->
-    <section id="about" class="about">
-        <div class="container">
-            <div class="about-content">
-                <div class="about-text">
-                    <h2 class="section-title">About SkillLink</h2>
-                    <p class="about-description">
-                        SkillLink was founded with a simple mission: to bridge the gap between talent and opportunity. 
-                        In today's fast-paced digital world, finding the right skills or the right opportunities 
-                        shouldn't be a challenge.
-                    </p>
-                    <p class="about-description">
-                        Our platform leverages cutting-edge technology to create meaningful connections that drive 
-                        success for both individuals and organizations. Whether you're a freelancer, job seeker, 
-                        or company looking for talent, SkillLink is your gateway to endless possibilities.
-                    </p>
-                    <div class="stats">
-                        <div class="stat">
-                            <div class="stat-number">10K+</div>
-                            <div class="stat-label">Active Users</div>
-                        </div>
-                        <div class="stat">
-                            <div class="stat-number">500+</div>
-                            <div class="stat-label">Companies</div>
-                        </div>
-                        <div class="stat">
-                            <div class="stat-number">95%</div>
-                            <div class="stat-label">Success Rate</div>
-                        </div>
+                <h2>Welcome Back!</h2>
+                <p>Continue your journey to connect with opportunities and showcase your skills.</p>
+                <div class="visual-features">
+                    <div class="visual-feature">
+                        <div class="feature-icon">01</div>
+                        <span>Smart Matching</span>
                     </div>
-                </div>
-                <div class="about-visual">
-                    <div class="about-image">
-                        <div class="image-placeholder">
-                            <div class="placeholder-icon">🚀</div>
-                            <div class="placeholder-text">Innovation at Work</div>
-                        </div>
+                    <div class="visual-feature">
+                        <div class="feature-icon">02</div>
+                        <span>Global Network</span>
+                    </div>
+                    <div class="visual-feature">
+                        <div class="feature-icon">03</div>
+                        <span>Career Growth</span>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
 
-    <!-- CTA Section -->
-    <section class="cta">
-        <div class="container">
-            <div class="cta-content">
-                <h2>Ready to Transform Your Career?</h2>
-                <p>Join thousands of professionals who have already discovered their perfect match on SkillLink.</p>
-                <div class="cta-buttons">
-                    <a href="register.html" class="btn btn-primary">Get Started Now</a>
-                    <a href="login.html" class="btn btn-outline">Sign In</a>
+        <div class="auth-form-container">
+            <div class="auth-form">
+                <div class="form-header">
+                    <h1>Sign In</h1>
+                    <p id="loginStepText">Enter your credentials to access your account</p>
                 </div>
-            </div>
-        </div>
-    </section>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <div class="logo">
-                        <div class="logo-icon">🔗</div>
-                        <span class="logo-text">SkillLink</span>
+                <form id="loginForm" class="login-form" autocomplete="off">
+                    <div class="input-group">
+                        <label for="loginEmail">Email Address</label>
+                        <input type="email" id="loginEmail" name="email" placeholder="Enter your email" required>
+                        <div class="input-icon">@</div>
                     </div>
-                    <p>Connecting talent with opportunity, one skill at a time.</p>
+
+                    <div class="input-group">
+                        <label for="loginPassword">Password</label>
+                        <input type="password" id="loginPassword" name="password" placeholder="Enter your password" required>
+                        <div class="input-icon">*</div>
+                        <button type="button" class="password-toggle" onclick="togglePassword('loginPassword')">
+                            <span class="toggle-icon">Show</span>
+                        </button>
+                    </div>
+
+                    <div class="form-options">
+                        <label class="checkbox-container">
+                            <input type="checkbox" id="rememberMe">
+                            <span class="checkmark"></span>
+                            Remember me
+                        </label>
+                        <a href="#" class="forgot-password">Forgot password?</a>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-full">
+                        <span class="btn-text">Send OTP</span>
+                        <div class="btn-loader"></div>
+                    </button>
+                </form>
+
+                <form id="otpForm" class="login-form" autocomplete="off" style="display:none;">
+                    <div class="input-group">
+                        <label for="loginOtp">Email OTP</label>
+                        <input type="text" id="loginOtp" name="otp" placeholder="Enter 6-digit code" inputmode="numeric" maxlength="6" required>
+                        <div class="input-icon">#</div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-full">
+                        <span class="btn-text">Verify OTP</span>
+                        <div class="btn-loader"></div>
+                    </button>
+
+                    <button type="button" class="btn btn-outline btn-full" style="margin-top:0.75rem;" onclick="resetLoginStep()">
+                        Use different login
+                    </button>
+                </form>
+
+                <div id="loginResult" class="result"></div>
+
+                <div class="form-footer">
+                    <p>Don't have an account? <a href="register.html" class="auth-link">Create one now</a></p>
                 </div>
-                <div class="footer-section">
-                    <h4>Platform</h4>
-                    <ul>
-                        <li><a href="#features">Features</a></li>
-                        <li><a href="#about">About</a></li>
-                        <li><a href="register.html">Sign Up</a></li>
-                        <li><a href="login.html">Login</a></li>
-                    </ul>
+
+                <div class="back-home">
+                    <a href="index.html" class="back-link">Back to Home</a>
                 </div>
-                <div class="footer-section">
-                    <h4>Support</h4>
-                    <ul>
-                        <li><a href="#">Help Center</a></li>
-                        <li><a href="#">Contact Us</a></li>
-                        <li><a href="#">Privacy Policy</a></li>
-                        <li><a href="#">Terms of Service</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h4>Connect</h4>
-                    <ul>
-                        <li><a href="#">Twitter</a></li>
-                        <li><a href="#">LinkedIn</a></li>
-                        <li><a href="#">GitHub</a></li>
-                        <li><a href="#">Blog</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2026 SkillLink. All rights reserved.</p>
             </div>
         </div>
-    </footer>
+    </div>
 
-    <script src="./config.js"></script>
-    <script src="./script.js"></script>
+<script src="./config.js"></script>
+<script src="./script.js"></script>
+    <script>
+let pendingLoginEmail = '';
+let pendingRememberDevice = true;
+
+function getTrustedLoginToken() {
+    return localStorage.getItem('trustedLoginToken') || '';
+}
+
+function getDeviceLabel() {
+    const platform = navigator.platform || 'Unknown device';
+    const browser = navigator.userAgent || 'Browser';
+    return `${platform} - ${browser}`.slice(0, 200);
+}
+
+function setButtonLoading(button, isLoading) {
+    const btnText = button.querySelector('.btn-text');
+    const btnLoader = button.querySelector('.btn-loader');
+    button.disabled = isLoading;
+    if (btnText) btnText.style.opacity = isLoading ? '0' : '1';
+    if (btnLoader) btnLoader.style.display = isLoading ? 'block' : 'none';
+}
+
+function showLoginMessage(message, type) {
+    const resultDiv = document.getElementById('loginResult');
+    resultDiv.textContent = message;
+    resultDiv.className = `result ${type}`;
+}
+
+function fetchWithTimeout(url, options = {}, timeoutMs = 20000) {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
+    return fetch(url, {
+        ...options,
+        signal: controller.signal
+    }).finally(() => clearTimeout(timeoutId));
+}
+
+function resetLoginStep() {
+    pendingLoginEmail = '';
+    document.getElementById('otpForm').style.display = 'none';
+    document.getElementById('loginForm').style.display = 'block';
+    document.getElementById('loginOtp').value = '';
+    document.getElementById('loginStepText').textContent = 'Enter your credentials to access your account';
+    document.getElementById('loginResult').textContent = '';
+    document.getElementById('loginResult').className = 'result';
+}
+
+document.getElementById('loginForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const submitBtn = this.querySelector('button[type="submit"]');
+    const email = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPassword').value;
+    pendingRememberDevice = document.getElementById('rememberMe').checked;
+
+    setButtonLoading(submitBtn, true);
+    showLoginMessage('', '');
+
+    fetchWithTimeout(window.buildSkillLinkApiUrl('/auth/login'), {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+            email,
+            password,
+            trustedDeviceToken: getTrustedLoginToken()
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.token) {
+            showLoginMessage(data.message || 'Login successful! Redirecting...', 'success');
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('user', JSON.stringify(data.user || {
+                name: email.split('@')[0],
+                email
+            }));
+            setTimeout(() => {
+                window.location.href = 'dashboard.html';
+            }, 500);
+        } else if (data.otpRequired) {
+            pendingLoginEmail = data.email || email;
+            const otpMessage = data.otpPreview
+                ? `${data.message || 'Local OTP ready.'} OTP: ${data.otpPreview}`
+                : (data.message || 'OTP sent to your email.');
+            showLoginMessage(otpMessage, 'success');
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('otpForm').style.display = 'block';
+            document.getElementById('loginStepText').textContent = 'Enter the OTP sent to your email';
+            document.getElementById('loginOtp').focus();
+        } else {
+            showLoginMessage(data.error || data.message || 'Login failed.', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Login error:', error);
+        showLoginMessage(error.name === 'AbortError' ? 'Server took too long to respond. Please try again.' : 'Connection error.', 'error');
+    })
+    .finally(() => {
+        setButtonLoading(submitBtn, false);
+    });
+});
+
+document.getElementById('otpForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const submitBtn = this.querySelector('button[type="submit"]');
+    const otp = document.getElementById('loginOtp').value.trim();
+
+    setButtonLoading(submitBtn, true);
+    showLoginMessage('', '');
+
+    fetchWithTimeout(window.buildSkillLinkApiUrl('/auth/verify-login-otp'), {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+            email: pendingLoginEmail,
+            otp,
+            rememberDevice: pendingRememberDevice,
+            deviceName: getDeviceLabel()
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.token) {
+            showLoginMessage('Login verified! Redirecting...', 'success');
+            localStorage.setItem('token', data.token);
+            if (data.trustedDeviceToken && pendingRememberDevice) {
+                localStorage.setItem('trustedLoginToken', data.trustedDeviceToken);
+            } else if (!pendingRememberDevice) {
+                localStorage.removeItem('trustedLoginToken');
+            }
+            localStorage.setItem('user', JSON.stringify(data.user || {
+                name: pendingLoginEmail.split('@')[0],
+                email: pendingLoginEmail
+            }));
+            setTimeout(() => {
+                window.location.href = 'dashboard.html';
+            }, 800);
+        } else {
+            showLoginMessage(data.error || data.message || 'OTP verification failed.', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('OTP verification error:', error);
+        showLoginMessage(error.name === 'AbortError' ? 'Server took too long to respond. Please try again.' : 'Connection error.', 'error');
+    })
+    .finally(() => {
+        setButtonLoading(submitBtn, false);
+    });
+});
+    </script>
 </body>
 
 </html>
