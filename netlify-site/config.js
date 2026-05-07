@@ -1,5 +1,5 @@
 (function () {
-  const localApiBase = 'http://localhost:5000';
+const localApiBase = 'https://skilllink-live.onrender.com';
 
   window.SKILLLINK_CONFIG = {
     API_BASE_URL: localApiBase
